@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Locadora - Início</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<header class="topo">
+  <h1>NextDrive 🚗</h1>
+  <nav id="navTop">
+    <!-- Estes elementos serão manipulados por index.js -->
+    <span id="usuarioNome" class="usuarioNome"></span>
+    <button id="btnLogin">Login</button>
+    <button id="btnRegistro">Registrar</button>
+    <button id="btnSair" style="display:none;">Sair</button>
+  </nav>
+</header>
+
+  <main>
+    <h2>Carros disponíveis para aluguel</h2>
+    <div class="carros-container" id="listaCarros">
+      <!-- Os carros serão carregados dinamicamente -->
+    </div>
+  </main>
+  <script src="js/index.js"></script>
+<button id="btnPainelDev" class="btn-nav" style="display:none;">Painel Dev</button>
+</body>
+</html>
