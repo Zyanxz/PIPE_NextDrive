@@ -1,0 +1,167 @@
+:root{
+  --bg: #050606; /* página fundo preto */
+  --card: #0d1312; /* cartões levemente mais claros que o fundo */
+  --text: #dff7e6; /* texto claro esverdeado */
+  --muted: #9bd9a8; /* texto secundário */
+  --accent: #16a34a; /* verde principal */
+  --accent-2: #22c55e; /* verde secundário */
+  --danger: #ef4444;
+  --glass: rgba(255,255,255,0.03);
+}
+
+/* RESET / BASE */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(34,197,94,0.04), transparent), var(--bg);
+  color: var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* TOPO */
+.topo{
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:1rem 1.25rem;
+  gap:1rem;
+}
+.topo h1{font-size:1.1rem;margin:0;color:var(--text)}
+.topo nav{display:flex;align-items:center;gap:0.5rem}
+.topo nav button{background:transparent;border:1px solid rgba(34,197,94,0.12);padding:0.45rem 0.7rem;border-radius:8px;margin-left:0.25rem;cursor:pointer;color:var(--accent);font-weight:600}
+.topo nav button:hover{background:rgba(34,197,94,0.06)}
+
+/* MAIN LAYOUT */
+main{flex:1;padding:2rem;max-width:1200px;margin:0 auto;width:100%}
+
+/* FORM CARDS */
+.form-box{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:1.6rem;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);width:100%;max-width:560px;margin:0 auto;border:1px solid rgba(255,255,255,0.03)}
+.form-box h1,.form-box h2{margin:0 0 0.6rem 0;color:var(--text)}
+.form-box p{color:var(--muted);margin:0 0 1rem}
+.form-box input{width:100%;padding:0.9rem;border:1px solid rgba(255,255,255,0.04);border-radius:10px;margin-bottom:0.75rem;background:#07110f;color:var(--text)}
+.form-box .row{display:flex;gap:0.75rem}
+.form-box .row input{flex:1}
+
+.btn-principal{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#021006;border:none;padding:0.9rem;border-radius:10px;font-weight:800;cursor:pointer;width:100%;transition:transform .12s ease, box-shadow .12s ease;box-shadow:0 6px 18px rgba(34,197,94,0.12)}
+.btn-principal:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(34,197,94,0.14)}
+
+/* MENSAGENS */
+.mensagem{margin-top:0.8rem;padding:0.6rem;border-radius:8px;font-weight:600;background:var(--glass);color:var(--text)}
+.mensagem.sucesso{background:rgba(34,197,94,0.06);color:var(--accent)}
+.mensagem.erro{background:rgba(239,68,68,0.06);color:var(--danger)}
+
+/* CARDS DE CARROS */
+.carros-container{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.carro-card{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));padding:1rem;border-radius:12px;box-shadow:0 8px 24px rgba(2,6,23,0.6);display:flex;flex-direction:column;align-items:flex-start;border:1px solid rgba(255,255,255,0.03)}
+.carro-card h3{margin:0 0 0.4rem 0;color:var(--text)}
+.carro-card p{margin:0 0 0.5rem 0;color:var(--muted)}
+.carro-card .preco{margin-top:auto;font-weight:800;color:var(--accent-2)}
+.carro-card button{margin-top:0.75rem;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#021006;border:none;padding:0.55rem 0.8rem;border-radius:8px;cursor:pointer}
+.carro-card button:disabled{background:#23302b;cursor:not-allowed}
+
+/* Thumbnails for cars */
+.carro-thumb{width:100%;height:140px;object-fit:cover;border-radius:8px;margin-bottom:0.7rem;border:1px solid rgba(255,255,255,0.03)}
+
+/* DEV PANEL */
+.tela-dev{background:linear-gradient(180deg,#050606 0%, #07110f 100%);color:var(--text);padding-bottom:2rem;min-height:100vh}
+.dev-container{max-width:920px;margin:2rem auto;padding:1.2rem;border-radius:12px}
+
+/* RESPONSIVIDADE */
+@media (max-width:900px){
+  .topo{padding:0.9rem}
+  .form-box{padding:1rem}
+  main{padding:1rem}
+}
+
+@media (max-width:600px){
+  .topo{flex-wrap:wrap;align-items:flex-start}
+  .topo h1{font-size:0.98rem}
+  .topo nav{width:100%;justify-content:flex-end}
+  .form-box{padding:0.85rem;border-radius:10px}
+  .carros-container{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  main{padding:0.8rem}
+}
+
+/* ======== TOASTS ======== */
+.toast{
+  min-width:220px;
+  max-width:320px;
+  padding:0.8rem 1rem;
+  margin-top:0.6rem;
+  border-radius:10px;
+  box-shadow:0 6px 20px rgba(2,6,23,0.12);
+  background:#fff;color:var(--text);opacity:0;transform:translateY(8px);transition:all .28s cubic-bezier(.2,.9,.2,1);
+}
+.toast--visible{opacity:1;transform:translateY(0)}
+.toast-success{border-left:4px solid var(--success)}
+.toast-error{border-left:4px solid var(--danger)}
+.toast-info{border-left:4px solid var(--accent)}
+
+/* pressed microinteraction */
+.pressed{transform:translateY(1px) scale(.997);opacity:.95}
+
+/* small accessibility focus */
+button:focus{outline:3px solid rgba(37,99,235,0.15);outline-offset:2px}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  left:0;
+  top:0;
+  height:100vh;
+  width:280px;
+  max-width:80%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  backdrop-filter: blur(6px);
+  transform: translateX(-110%);
+  transition: transform .28s ease;
+  z-index:10000;
+  padding:1rem;
+  border-right:1px solid rgba(255,255,255,0.03);
+}
+.sidebar.open{transform:translateX(0)}
+.sidebar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.sidebar-header h2{margin:0;color:var(--text);font-size:1.05rem}
+.close-btn{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:0.3rem 0.45rem;border-radius:8px;cursor:pointer;color:var(--text)}
+.sidebar-nav{display:flex;flex-direction:column;gap:0.6rem}
+.sidebar-nav a{color:var(--muted);text-decoration:none;padding:0.5rem 0.6rem;border-radius:8px}
+.sidebar-nav a:hover{background:rgba(34,197,94,0.06);color:var(--text)}
+
+/* overlay when sidebar open */
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,0);pointer-events:none;opacity:0;transition:opacity .18s ease, background .18s ease;z-index:9999}
+.sidebar-overlay.show{background:rgba(0,0,0,0.45);pointer-events:auto;opacity:1}
+
+/* menu button (hamburger) */
+.menu-btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#021006;border:none;padding:0.6rem 0.8rem;border-radius:8px;cursor:pointer}
+.menu-btn.fixed{position:fixed;right:1rem;bottom:1.4rem;box-shadow:0 8px 24px rgba(2,6,23,0.6);z-index:11000}
+
+@media (min-width:900px){
+  .sidebar{width:260px}
+}
+
+/* Perfil visual estilo redes sociais */
+.profile-card{display:flex;gap:1.2rem;align-items:center;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));padding:1rem;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+.profile-left{flex:0 0 120px;display:flex;align-items:center;justify-content:center}
+.avatar{width:120px;height:120px;border-radius:50%;background:linear-gradient(180deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#021006;font-weight:800;font-size:28px}
+.profile-right{flex:1}
+.profile-head{display:flex;align-items:center;gap:1rem}
+.profile-head h2{margin:0}
+.edit-btn{padding:.45rem .6rem;font-size:.9rem}
+.profile-stats{display:flex;gap:1.25rem;margin-top:0.6rem}
+.profile-stats div{display:flex;flex-direction:column;align-items:flex-start}
+.profile-stats span{color:var(--muted);font-size:0.9rem}
+.profile-bio{margin-top:.8rem}
+
+/* form dentro do perfil */
+.form-box input{background:#07110f}
+
+@media (max-width:700px){
+  .profile-card{flex-direction:column;align-items:center;text-align:center}
+  .profile-left{flex-basis:auto}
+  .profile-stats{justify-content:center}
+}
