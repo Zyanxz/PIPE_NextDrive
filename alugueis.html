@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NextDrive | Meus Aluguéis</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h2>NextDrive 🚗</h2>
+      <button id="btnFecharSidebar" class="close-btn">✖</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="index.html">Início</a>
+      <a href="alugueis.html">Meus Aluguéis</a>
+      <a href="perfil.html">Meu Perfil</a>
+    </nav>
+  </div>
+
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <header class="topo">
+    <button id="btnMenu" class="menu-btn">☰</button>
+    <h1>Meus Aluguéis</h1>
+  </header>
+
+  <main>
+    <h2>Veículos alugados</h2>
+    <div id="listaAlugueis" class="carros-container"></div>
+  </main>
+
+  <script src="js/sidebar.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/alugueis.js"></script>
+</body>
+</html>

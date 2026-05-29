@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Dev | NextDrive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="tela-dev">
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h2>NextDrive 🚗</h2>
+      <button id="btnFecharSidebar" class="close-btn">✖</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="index.html">Início</a>
+      <a href="alugueis.html">Meus Aluguéis</a>
+      <a href="perfil.html">Meu Perfil</a>
+    </nav>
+  </div>
+
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <header class="topo">
+    <button id="btnMenu" class="menu-btn">☰</button>
+    <h1>NextDrive 🚗 | Painel Dev</h1>
+    <nav>
+      <button id="btnVoltar" class="btn-nav">Voltar</button>
+      <button id="btnSair" class="btn-nav">Sair</button>
+    </nav>
+  </header>
+
+  <main class="dev-container">
+    <h2>Cadastrar novo carro</h2>
+
+    <form id="formCarro" class="form-box">
+      <input type="text" name="modelo" placeholder="Modelo" required>
+      <input type="text" name="marca" placeholder="Marca" required>
+      <input type="number" name="ano" placeholder="Ano" required>
+      <input type="number" name="preco" placeholder="Preço por dia (R$)" required>
+      <input type="text" name="imagem" placeholder="URL da imagem (opcional)">
+      <button type="submit" class="btn-principal">Adicionar Carro</button>
+    </form>
+
+    <div id="mensagem" class="mensagem"></div>
+
+    <h3 style="margin-top:1.6rem;color:#fff;">Carros cadastrados</h3>
+    <div id="listaCarros" class="carros-container"></div>
+  </main>
+
+  <script src="js/sidebar.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/dev.js"></script>
+</body>
+</html>

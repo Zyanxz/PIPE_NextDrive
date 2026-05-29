@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NextDrive | Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="tela-login">
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h2>NextDrive 🚗</h2>
+      <button id="btnFecharSidebar" class="close-btn">✖</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="index.html">Início</a>
+      <a href="alugueis.html">Meus Aluguéis</a>
+      <a href="perfil.html">Meu Perfil</a>
+    </nav>
+  </div>
+
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <header class="topo">
+    <button id="btnMenu" class="menu-btn">☰</button>
+    <h1>NextDrive 🚗 | Login</h1>
+  </header>
+
+  <div class="form-container">
+    <form id="formLogin" class="form-box">
+      <h1>Bem-vindo de volta!</h1>
+      <p>Entre para continuar sua jornada na NextDrive 🚗</p>
+
+      <input type="email" name="email" placeholder="E-mail" required />
+      <input type="password" name="senha" placeholder="Senha" required />
+      <button type="submit" class="btn-principal">Entrar</button>
+
+      <p class="link-troca">Ainda não tem conta? <a href="registro.html">Crie uma agora</a></p>
+      <p id="mensagem" class="mensagem"></p>
+    </form>
+  </div>
+
+  <script src="js/sidebar.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

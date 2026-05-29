@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NextDrive - Início</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <h2>NextDrive 🚗</h2>
+      <button id="btnFecharSidebar" class="close-btn">✖</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="index.html">Início</a>
+      <a href="alugueis.html">Meus Aluguéis</a>
+      <a href="perfil.html">Meu Perfil</a>
+    </nav>
+  </div>
+
+  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="topo">
+    <h1>NextDrive 🚗</h1>
+
+    <nav>
+      <span id="usuarioNome"></span>
+      <button id="btnLogin">Login</button>
+      <button id="btnRegistro">Registrar</button>
+      <button id="btnSair" style="display:none;">Sair</button>
+      <button id="btnPainelDev" style="display:none; margin-left:8px;">Painel Dev</button>
+    </nav>
+
+    <button id="btnMenu" class="menu-btn">☰</button>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero-banner"></section>
+
+  <!-- CONTEÚDO -->
+  <main>
+    <h2>Carros disponíveis para aluguel</h2>
+    <div class="carros-container" id="listaCarros"></div>
+
+    <h2 style="margin-top:1.6rem">Carros alugados</h2>
+    <div class="carros-container" id="listaAlugados"></div>
+  </main>
+
+  <script src="js/sidebar.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>
