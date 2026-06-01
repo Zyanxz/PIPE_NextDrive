@@ -1,61 +1,193 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NextDrive - Início</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NextDrive | Aluguel de Veículos</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-  <!-- ===== SIDEBAR ===== -->
-  <div id="sidebar" class="sidebar">
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
     <div class="sidebar-header">
-      <h2>NextDrive 🚗</h2>
-      <button id="btnFecharSidebar" class="close-btn">✖</button>
+        <img src="img/logonxd.jpeg" alt="NextDrive" class="logo-sidebar">
+        <button id="btnFecharSidebar">✕</button>
     </div>
 
-    <nav class="sidebar-nav">
-      <a href="index.html">Início</a>
-      <a href="alugueis.html">Meus Aluguéis</a>
-      <a href="perfil.html">Meu Perfil</a>
-    </nav>
-  </div>
-
-  <div id="sidebarOverlay" class="sidebar-overlay"></div>
-
-  <!-- ===== HEADER ===== -->
-  <header class="topo">
-    <h1>NextDrive 🚗</h1>
-
     <nav>
-      <span id="usuarioNome"></span>
-      <button id="btnLogin">Login</button>
-      <button id="btnRegistro">Registrar</button>
-      <button id="btnSair" style="display:none;">Sair</button>
-      <button id="btnPainelDev" style="display:none; margin-left:8px;">Painel Dev</button>
+        <a href="index.html">🏠 Início</a>
+        <a href="alugueis.html">🚗 Meus Aluguéis</a>
+        <a href="perfil.html">👤 Meu Perfil</a>
+    </nav>
+</div>
+
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+<!-- HEADER -->
+<header class="topo">
+
+    <div class="logo-area">
+        <img src="img/logonxd.jpeg" alt="NextDrive" class="logo">
+        <div>
+            <h1>NextDrive</h1>
+            <span>Aluguel inteligente de veículos</span>
+        </div>
+    </div>
+
+    <nav class="nav-actions">
+        <span id="usuarioNome"></span>
+
+        <button id="btnLogin" class="btn-outline">
+            Entrar
+        </button>
+
+        <button id="btnRegistro" class="btn-primary">
+            Criar Conta
+        </button>
+
+        <button id="btnSair" class="btn-outline" style="display:none;">
+            Sair
+        </button>
+
+        <button id="btnPainelDev"
+                class="btn-dev"
+                style="display:none;">
+            Painel Dev
+        </button>
     </nav>
 
-    <button id="btnMenu" class="menu-btn">☰</button>
-  </header>
+    <button id="btnMenu" class="menu-btn">
+        ☰
+    </button>
 
-  <!-- HERO -->
-  <section class="hero-banner"></section>
+</header>
 
-  <!-- CONTEÚDO -->
-  <main>
-    <h2>Carros disponíveis para aluguel</h2>
-    <div class="carros-container" id="listaCarros"></div>
+<!-- HERO -->
+<section class="hero">
 
-    <h2 style="margin-top:1.6rem">Carros alugados</h2>
-    <div class="carros-container" id="listaAlugados"></div>
-  </main>
+    <div class="hero-content">
 
-  <script src="js/sidebar.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/index.js"></script>
+        <span class="badge">
+            🚀 Plataforma moderna de locação
+        </span>
+
+        <h2>
+            Encontre o carro ideal
+            para sua próxima viagem.
+        </h2>
+
+        <p>
+            Escolha entre diversos modelos,
+            alugue online e retire rapidamente.
+            Simples, seguro e sem burocracia.
+        </p>
+
+        <div class="hero-buttons">
+            <button class="btn-primary">
+                Alugar Agora
+            </button>
+
+            <button class="btn-outline">
+                Ver Frota
+            </button>
+        </div>
+
+    </div>
+
+    <div class="hero-image">
+        <img
+            src="img/logonxd.jpeg"
+            alt="NextDrive">
+    </div>
+
+</section>
+
+<!-- ESTATÍSTICAS -->
+<section class="stats">
+
+    <div class="stat-card">
+        <h3>+500</h3>
+        <p>Clientes</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>+120</h3>
+        <p>Veículos</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>24h</h3>
+        <p>Suporte</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>100%</h3>
+        <p>Online</p>
+    </div>
+
+</section>
+
+<!-- DISPONÍVEIS -->
+<main>
+
+    <section class="secao">
+
+        <div class="titulo-secao">
+            <h2>🚗 Carros Disponíveis</h2>
+            <span>Prontos para aluguel</span>
+        </div>
+
+        <div
+            class="carros-container"
+            id="listaCarros">
+        </div>
+
+    </section>
+
+    <!-- ALUGADOS -->
+    <section class="secao">
+
+        <div class="titulo-secao">
+            <h2>📋 Carros Alugados</h2>
+            <span>Veículos atualmente locados</span>
+        </div>
+
+        <div
+            class="carros-container"
+            id="listaAlugados">
+        </div>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+
+    <img src="img/logonxd.jpeg" alt="Logo">
+
+    <h3>NextDrive</h3>
+
+    <p>
+        Mobilidade inteligente para você ir mais longe.
+    </p>
+
+    <small>
+        © 2026 NextDrive. Todos os direitos reservados.
+    </small>
+
+</footer>
+
+<script src="js/sidebar.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/index.js"></script>
+
 </body>
 </html>
