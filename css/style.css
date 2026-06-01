@@ -1,40 +1,68 @@
 :root{
-  --bg: #050606; /* página fundo preto */
-  --card: #0d1312; /* cartões levemente mais claros que o fundo */
-  --text: #dff7e6; /* texto claro esverdeado */
-  --muted: #9bd9a8; /* texto secundário */
-  --accent: #16a34a; /* verde principal */
-  --accent-2: #22c55e; /* verde secundário */
-  --danger: #ef4444;
-  --glass: rgba(255,255,255,0.03);
+    --roxo:#6C2BD9;
+    --verde:#00C853;
+    --escuro:#121212;
+    --cinza:#F5F6FA;
 }
 
-/* RESET / BASE */
-*{box-sizing:border-box}
 body{
-  margin:0;
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-  background: radial-gradient(1200px 600px at 10% 10%, rgba(34,197,94,0.04), transparent), var(--bg);
-  color: var(--text);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  -webkit-font-smoothing:antialiased;
+    font-family:'Inter',sans-serif;
+    background:var(--cinza);
 }
 
-/* TOPO */
-.topo{
-  background:transparent;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:1rem 1.25rem;
-  gap:1rem;
+.hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:80px;
+    background:linear-gradient(
+        135deg,
+        #6C2BD9,
+        #00C853
+    );
+    color:white;
 }
-.topo h1{font-size:1.1rem;margin:0;color:var(--text)}
-.topo nav{display:flex;align-items:center;gap:0.5rem}
-.topo nav button{background:transparent;border:1px solid rgba(34,197,94,0.12);padding:0.45rem 0.7rem;border-radius:8px;margin-left:0.25rem;cursor:pointer;color:var(--accent);font-weight:600}
-.topo nav button:hover{background:rgba(34,197,94,0.06)}
+
+.btn-primary{
+    background:var(--verde);
+    color:white;
+    border:none;
+    padding:14px 24px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btn-outline{
+    background:white;
+    color:var(--roxo);
+    border:none;
+    padding:14px 24px;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.stat-card{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.carros-container{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fill,minmax(320px,1fr));
+    gap:25px;
+}
+
+footer{
+    margin-top:60px;
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:40px;
+}.topo nav button:hover{background:rgba(34,197,94,0.06)}
 
 /* MAIN LAYOUT */
 main{flex:1;padding:2rem;max-width:1200px;margin:0 auto;width:100%}
