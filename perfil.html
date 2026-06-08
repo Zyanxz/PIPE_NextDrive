@@ -1,74 +1,131 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NextDrive | Perfil</title>
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NextDrive | Meu Perfil</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
 </head>
-<body class="tela-registro">
-  <div id="sidebar" class="sidebar">
+
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
     <div class="sidebar-header">
-      <h2>NextDrive 🚗</h2>
-      <button id="btnFecharSidebar" class="close-btn">✖</button>
+        <img src="img/logonxd.jpeg" alt="NextDrive" class="logo-sidebar">
+        <button id="btnFecharSidebar">✕</button>
     </div>
 
-    <nav class="sidebar-nav">
-      <a href="index.html">Início</a>
-      <a href="alugueis.html">Meus Aluguéis</a>
-      <a href="perfil.html">Meu Perfil</a>
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="alugueis.html">Meus Aluguéis</a>
+        <a href="perfil.html">Meu Perfil</a>
     </nav>
-  </div>
+</div>
 
-  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
 
-  <header class="topo">
+<!-- HEADER -->
+<header class="topo">
+
+    <div class="logo-area">
+        <img src="img/logonxd.jpeg" alt="NextDrive" class="logo">
+
+        <div>
+            <h1>Meu Perfil</h1>
+            <span>Gerencie suas informações</span>
+        </div>
+    </div>
+
     <button id="btnMenu" class="menu-btn">☰</button>
-    <button onclick="window.location.href='index.html'" class="close-btn">← Voltar</button>
-    <h1>Perfil</h1>
-  </header>
 
-  <main style="max-width:900px;margin:2rem auto;padding:1rem;">
+</header>
+
+<!-- PERFIL -->
+<main>
+
     <section class="profile-card">
-      <div class="profile-left">
-        <div id="avatar" class="avatar"></div>
-      </div>
-      <div class="profile-right">
-        <div class="profile-head">
-          <h2 id="pv-nome">Nome</h2>
-          <button id="editarPerfil" class="btn-principal edit-btn">Editar Perfil</button>
+
+        <div class="profile-left">
+            <div id="avatar" class="avatar"></div>
         </div>
-        <p id="pv-role" class="muted">Usuário</p>
-        <div class="profile-stats">
-          <div><strong id="stat-alugueis">0</strong><span>Aluguéis</span></div>
-          <div><strong id="stat-carros">0</strong><span>Carros</span></div>
+
+        <div class="profile-right">
+
+            <h2 id="pv-nome">Carregando...</h2>
+
+            <p id="pv-role">Usuário</p>
+
+            <div class="profile-stats">
+                <div>
+                    <strong id="stat-alugueis">0</strong>
+                    <span>Reservas</span>
+                </div>
+
+                <div>
+                    <strong id="stat-carros">0</strong>
+                    <span>Veículos</span>
+                </div>
+            </div>
+
+            <p id="pv-bio" class="profile-bio">
+                Atualize seus dados para melhorar sua experiência.
+            </p>
+
+            <button id="editarPerfil" class="btn-primary">
+                Editar perfil
+            </button>
+
         </div>
-        <p id="pv-bio" class="profile-bio muted">Sem bio — edite seu perfil para adicionar mais informações.</p>
-      </div>
+
     </section>
 
-    <section id="perfilForm" class="form-box" style="display:none;margin-top:1rem;">
-      <h2>Editar Perfil</h2>
-      <p class="muted">Altere seus dados abaixo e clique em salvar.</p>
-      <form id="formPerfil">
-        <input type="text" name="nome" placeholder="Nome completo" required />
-        <input type="text" name="cpf" placeholder="CPF" required />
-        <input type="text" name="cnh" placeholder="CNH" required />
-        <input type="tel" name="tel" placeholder="Telefone (opcional)" />
-        <input type="email" name="email" placeholder="E-mail" required />
-        <input type="password" name="senha" placeholder="Senha (apenas se quiser alterar)" />
+    <!-- FORMULÁRIO -->
+    <section id="perfilForm" class="form-box" style="display:none; margin-top:20px;">
 
-        <div style="display:flex;gap:.6rem;margin-top:0.8rem">
-          <button type="submit" class="btn-principal">Salvar alterações</button>
-          <button type="button" id="cancelEdit" class="close-btn">Cancelar</button>
-        </div>
-      </form>
-      <div id="mensagem" class="mensagem" style="margin-top:.8rem"></div>
+        <h2>Editar informações</h2>
+
+        <form id="formPerfil">
+
+            <input type="text" name="nome" placeholder="Nome completo" required>
+            <input type="text" name="cpf" placeholder="CPF" required>
+            <input type="text" name="cnh" placeholder="CNH" required>
+            <input type="tel" name="tel" placeholder="Telefone">
+            <input type="email" name="email" placeholder="E-mail" required>
+            <input type="password" name="senha" placeholder="Nova senha (opcional)">
+
+            <div style="display:flex;gap:10px;">
+                <button type="submit" class="btn-primary">Salvar</button>
+                <button type="button" id="cancelEdit" class="btn-outline">Cancelar</button>
+            </div>
+
+        </form>
+
+        <div id="mensagem" class="mensagem"></div>
+
     </section>
-  </main>
 
-  <script src="js/sidebar.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/perfil.js"></script>
+    <!-- HISTÓRICO -->
+    <section class="form-box" style="margin-top:20px;">
+
+        <h2>Histórico de reservas</h2>
+
+        <div id="historicoAlugueis">
+            Carregando...
+        </div>
+
+    </section>
+
+</main>
+
+<script src="js/sidebar.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/perfil.js"></script>
+
 </body>
 </html>
