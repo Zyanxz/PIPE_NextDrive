@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NextDrive | Aluguel de Veículos</title>
+<title>NextDrive | Mobilidade Inteligente</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,8 +23,8 @@
 
     <nav>
         <a href="index.html"> Início</a>
-        <a href="alugueis.html"> Meus Aluguéis</a>
-        <a href="perfil.html"> Meu Perfil</a>
+        <a href="alugueis.html"> Minhas Reservas</a>
+        <a href="perfil.html">Meu Perfil</a>
     </nav>
 </div>
 
@@ -35,6 +35,178 @@
 
     <div class="logo-area">
         <img src="img/logonxd.jpeg" alt="NextDrive" class="logo">
+
+        <div>
+            <h1>NextDrive</h1>
+            <span>Soluções inteligentes em mobilidade</span>
+        </div>
+    </div>
+
+    <nav class="nav-actions">
+
+        <span id="usuarioNome"></span>
+
+        <button id="btnLogin" class="btn-outline">
+            Entrar
+        </button>
+
+        <button id="btnRegistro" class="btn-primary">
+            Criar Conta
+        </button>
+
+        <button id="btnSair"
+                class="btn-outline"
+                style="display:none;">
+            Sair
+        </button>
+
+        <button id="btnPainelDev"
+                class="btn-dev"
+                style="display:none;">
+            Painel Administrativo
+        </button>
+
+    </nav>
+
+    <button id="btnMenu" class="menu-btn">
+        ☰
+    </button>
+
+</header>
+
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <span class="badge">
+             Mobilidade Inteligente para Você
+        </span>
+
+        <h2>
+            Alugue veículos de forma rápida,
+            segura e totalmente online.
+        </h2>
+
+        <p>
+            A NextDrive conecta você aos melhores veículos
+            para viagens, trabalho ou lazer. Escolha seu carro,
+            reserve em poucos minutos e aproveite uma experiência
+            moderna, segura e sem burocracia.
+        </p>
+
+        <div class="hero-buttons">
+
+            <button class="btn-primary">
+                Escolher Veículo
+            </button>
+
+            <button class="btn-outline">
+                Conhecer a Frota
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="hero-image">
+        <img
+            src="img/logonxd.jpeg"
+            alt="NextDrive">
+    </div>
+
+</section>
+
+<!-- ESTATÍSTICAS -->
+<section class="stats">
+
+    <div class="stat-card">
+        <h3>+1.500</h3>
+        <p>Clientes Atendidos</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>+300</h3>
+        <p>Veículos Disponíveis</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>24/7</h3>
+        <p>Atendimento Especializado</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>99,9%</h3>
+        <p>Disponibilidade da Plataforma</p>
+    </div>
+
+</section>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<main>
+
+    <!-- VEÍCULOS DISPONÍVEIS -->
+    <section class="secao">
+
+        <div class="titulo-secao">
+            <h2> Veículos Disponíveis</h2>
+            <span>
+                Escolha o modelo ideal para sua necessidade
+            </span>
+        </div>
+
+        <div
+            class="carros-container"
+            id="listaCarros">
+        </div>
+
+    </section>
+
+    <!-- VEÍCULOS RESERVADOS -->
+    <section class="secao">
+
+        <div class="titulo-secao">
+            <h2> Veículos em Uso</h2>
+            <span>
+                Automóveis atualmente reservados por clientes
+            </span>
+        </div>
+
+        <div
+            class="carros-container"
+            id="listaAlugados">
+        </div>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+
+    <img src="img/logonxd.jpeg"
+         alt="Logo NextDrive">
+
+    <h3>NextDrive</h3>
+
+    <p>
+        Soluções inteligentes em mobilidade,
+        conectando pessoas aos melhores veículos
+        com praticidade, segurança e inovação.
+    </p>
+
+    <small>
+        © 2026 NextDrive • Projeto Acadêmico de Desenvolvimento Web
+    </small>
+
+</footer>
+
+<script src="js/sidebar.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/index.js"></script>
+
+</body>
+</html>        <img src="img/logonxd.jpeg" alt="NextDrive" class="logo">
         <div>
             <h1>NextDrive</h1>
             <span>Aluguel inteligente de veículos</span>
