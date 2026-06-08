@@ -1,343 +1,207 @@
-// Perfil: visualizador + edição inline
+console.log("Perfil carregado com sucesso!");
 
-document.addEventListener(
-  "DOMContentLoaded",
-  async () => {
+// =====================================
+// ELEMENTOS
+// =====================================
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+const token = usuario?.token;
 
-    // =========================
-    // USUÁRIO LOGADO
-    // =========================
-    const usuario = JSON.parse(
-      localStorage.getItem("usuarioLogado")
-    );
+const avatar = document.getElementById("avatar");
+const pvNome = document.getElementById("pv-nome");
+const pvRole = document.getElementById("pv-role");
+const pvBio = document.getElementById("pv-bio");
 
-    const token = usuario?.token;
+const statAlugueis = document.getElementById("stat-alugueis");
+const statCarros = document.getElementById("stat-carros");
 
-    // =========================
-    // ELEMENTOS
-    // =========================
-    const mensagem =
-      document.getElementById("mensagem");
+const formSection = document.getElementById("perfilForm");
+const form = document.getElementById("formPerfil");
+const editarBtn = document.getElementById("editarPerfil");
+const cancelBtn = document.getElementById("cancelEdit");
 
-    const pvNome =
-      document.getElementById("pv-nome");
+const mensagem = document.getElementById("mensagem");
 
-    const pvRole =
-      document.getElementById("pv-role");
+// =====================================
+// LOGIN CHECK
+// =====================================
+if (!usuario || !token) {
+    alert("Você precisa estar logado.");
+    window.location.href = "login.html";
+}
 
-    const pvBio =
-      document.getElementById("pv-bio");
+// =====================================
+// AVATAR
+// =====================================
+function gerarAvatar(nome) {
 
-    const avatar =
-      document.getElementById("avatar");
+    const letras = (nome || "")
+        .split(" ")
+        .filter(Boolean)
+        .map(n => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
 
-    const statAlugueis =
-      document.getElementById("stat-alugueis");
+    avatar.textContent = letras || "U";
+}
 
-    const statCarros =
-      document.getElementById("stat-carros");
+// =====================================
+// CARREGAR PERFIL
+// =====================================
+async function carregarPerfil() {
 
-    const perfilFormSection =
-      document.getElementById("perfilForm");
-
-    const editarBtn =
-      document.getElementById("editarPerfil");
-
-    const cancelEdit =
-      document.getElementById("cancelEdit");
-
-    const form =
-      document.getElementById("formPerfil");
-
-    // =========================
-    // VALIDA LOGIN
-    // =========================
-    if (!usuario || !token) {
-
-      if (mensagem) {
-        mensagem.textContent =
-          "Você precisa estar logado.";
-      }
-
-      return;
-    }
-
-    // =========================
-    // AVATAR
-    // =========================
-    function setAvatar(name) {
-
-      const initials =
-        (name || "")
-          .split(" ")
-          .map(s => s[0])
-          .slice(0, 2)
-          .join("")
-          .toUpperCase();
-
-      avatar.textContent =
-        initials || "U";
-    }
-
-    // =========================
-    // CARREGAR PERFIL
-    // =========================
     try {
 
-      const [uRes, lRes] =
-        await Promise.all([
-
-          // PERFIL
-          fetch(
+        const res = await fetch(
             "http://localhost:3000/usuarios/me",
             {
-              headers: {
-                Authorization:
-                  `Bearer ${token}`
-              }
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             }
-          ),
+        );
 
-          // LOCAÇÕES
-          fetch(
-            "http://localhost:3000/me/locacoes",
-            {
-              headers: {
-                Authorization:
-                  `Bearer ${token}`
-              }
-            }
-          )
-        ]);
+        const data = await res.json();
 
-      const ud = await uRes.json();
-      const ld = await lRes.json();
+        if (!data.sucesso) return;
 
-      // =========================
-      // DADOS DO PERFIL
-      // =========================
-      if (ud.sucesso && ud.usuario) {
+        const u = data.usuario;
 
-        const u = ud.usuario;
+        pvNome.textContent = u.nome;
+        pvRole.textContent = u.role || "Usuário";
+        pvBio.textContent = `CPF: ${u.cpf} | CNH: ${u.cnh}`;
 
-        pvNome.textContent =
-          u.nome || "";
+        gerarAvatar(u.nome);
 
-        pvRole.textContent =
-          u.role || "Usuário";
-
-        pvBio.textContent =
-          `CPF: ${u.cpf || "-"} • CNH: ${u.cnh || "-"}`;
-
-        setAvatar(u.nome);
-
-        // Preencher formulário
-        if (form) {
-
-          form.nome.value =
-            u.nome || "";
-
-          form.cpf.value =
-            u.cpf || "";
-
-          form.cnh.value =
-            u.cnh || "";
-
-          form.tel.value =
-            u.tel || "";
-
-          form.email.value =
-            u.email || "";
-        }
-      }
-
-      // =========================
-      // ESTATÍSTICAS
-      // =========================
-      if (
-        ld.sucesso &&
-        Array.isArray(ld.locacoes)
-      ) {
-
-        statAlugueis.textContent =
-          ld.locacoes.length;
-
-        // quantidade de carros únicos
-        const carrosUnicos =
-          new Set(
-            ld.locacoes.map(
-              loc => loc.carro_id
-            )
-          );
-
-        statCarros.textContent =
-          carrosUnicos.size;
-      }
+        form.nome.value = u.nome || "";
+        form.cpf.value = u.cpf || "";
+        form.cnh.value = u.cnh || "";
+        form.tel.value = u.tel || "";
+        form.email.value = u.email || "";
 
     } catch (err) {
+        console.error(err);
+    }
+}
 
-      console.error(err);
+// =====================================
+// CARREGAR RESERVAS
+// =====================================
+async function carregarReservas() {
 
-      mensagem.textContent =
-        "Erro ao carregar perfil.";
+    try {
+
+        const res = await fetch(
+            "http://localhost:3000/me/locacoes",
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const data = await res.json();
+
+        if (!data.sucesso) return;
+
+        statAlugueis.textContent = data.locacoes.length;
+
+        const carros = new Set(
+            data.locacoes.map(l => l.carro_id)
+        );
+
+        statCarros.textContent = carros.size;
+
+        const historico = document.getElementById("historicoAlugueis");
+
+        historico.innerHTML = data.locacoes.length
+            ? data.locacoes.map(l => `
+                <div class="item-locacao">
+                    Veículo ID: ${l.carro_id}
+                </div>
+            `).join("")
+            : "Nenhuma reserva encontrada.";
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// =====================================
+// EDITAR PERFIL
+// =====================================
+editarBtn?.addEventListener("click", () => {
+    formSection.style.display = "block";
+});
+
+cancelBtn?.addEventListener("click", () => {
+    formSection.style.display = "none";
+});
+
+// =====================================
+// SALVAR PERFIL
+// =====================================
+form?.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const body = {
+        nome: form.nome.value,
+        cpf: form.cpf.value,
+        cnh: form.cnh.value,
+        tel: form.tel.value,
+        email: form.email.value
+    };
+
+    if (form.senha.value) {
+        body.senha = form.senha.value;
     }
 
-    // =========================
-    // ABRIR E FECHAR EDIÇÃO
-    // =========================
-    function openEdit() {
+    try {
 
-      perfilFormSection.style.display =
-        "block";
-
-      perfilFormSection.scrollIntoView({
-        behavior: "smooth"
-      });
-    }
-
-    function closeEdit() {
-
-      perfilFormSection.style.display =
-        "none";
-    }
-
-    editarBtn?.addEventListener(
-      "click",
-      openEdit
-    );
-
-    cancelEdit?.addEventListener(
-      "click",
-      closeEdit
-    );
-
-    // =========================
-    // SALVAR PERFIL
-    // =========================
-    form?.addEventListener(
-      "submit",
-      async (e) => {
-
-        e.preventDefault();
-
-        const body = {
-
-          nome:
-            form.nome.value.trim(),
-
-          cpf:
-            form.cpf.value.trim(),
-
-          cnh:
-            form.cnh.value.trim(),
-
-          tel:
-            form.tel.value.trim(),
-
-          email:
-            form.email.value.trim()
-        };
-
-        // senha opcional
-        const senha =
-          form.senha.value.trim();
-
-        if (senha) {
-          body.senha = senha;
-        }
-
-        try {
-
-          const res = await fetch(
+        const res = await fetch(
             "http://localhost:3000/usuarios/me",
             {
-              method: "PUT",
-
-              headers: {
-                "Content-Type":
-                  "application/json",
-
-                Authorization:
-                  `Bearer ${token}`
-              },
-
-              body: JSON.stringify(body)
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
             }
-          );
+        );
 
-          const data =
-            await res.json();
+        const data = await res.json();
 
-          // =========================
-          // SUCESSO
-          // =========================
-          if (data.sucesso) {
+        if (data.sucesso) {
 
-            // mantém token salvo
             localStorage.setItem(
-              "usuarioLogado",
-              JSON.stringify({
-                ...data.usuario,
-                token
-              })
+                "usuarioLogado",
+                JSON.stringify({
+                    ...data.usuario,
+                    token
+                })
             );
 
-            // atualiza tela
-            pvNome.textContent =
-              data.usuario.nome;
+            mensagem.textContent = "Perfil atualizado com sucesso!";
+            carregarPerfil();
 
-            pvBio.textContent =
-              `CPF: ${data.usuario.cpf} • CNH: ${data.usuario.cnh}`;
+            formSection.style.display = "none";
 
-            pvRole.textContent =
-              data.usuario.role;
-
-            setAvatar(
-              data.usuario.nome
-            );
-
-            mensagem.textContent =
-              "Perfil atualizado com sucesso.";
-
-            if (window.showToast) {
-              window.showToast(
-                "Perfil atualizado!",
-                "success"
-              );
-            }
-
-            closeEdit();
-
-          } else {
-
-            mensagem.textContent =
-              data.mensagem ||
-              "Erro ao atualizar.";
-
-            if (window.showToast) {
-              window.showToast(
-                data.mensagem ||
-                "Erro ao atualizar.",
-                "error"
-              );
-            }
-          }
-
-        } catch (err) {
-
-          console.error(err);
-
-          mensagem.textContent =
-            "Erro de conexão.";
-
-          if (window.showToast) {
-            window.showToast(
-              "Erro de conexão.",
-              "error"
-            );
-          }
+        } else {
+            mensagem.textContent = "Erro ao atualizar perfil.";
         }
-      }
-    );
-  }
-);
+
+    } catch (err) {
+        console.error(err);
+        mensagem.textContent = "Erro de conexão.";
+    }
+});
+
+// =====================================
+// INIT
+// =====================================
+document.addEventListener("DOMContentLoaded", () => {
+    carregarPerfil();
+    carregarReservas();
+});
