@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "node backend/server.js",
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "check": "node --check backend/server.js && node --check backend/db/connection.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,8 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.21.0"
+    "multer": "^2.1.1",
+    "pg": "^8.21.0",
+    "zod": "^4.4.3"
   }
 }
