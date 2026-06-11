@@ -1,394 +1,136 @@
-console.log("Index carregado com êxito!");
-
-// =====================================
-// ELEMENTOS
-// =====================================
 const btnLogin = document.getElementById("btnLogin");
 const btnRegistro = document.getElementById("btnRegistro");
 const btnSair = document.getElementById("btnSair");
+const btnPainelDev = document.getElementById("btnPainelDev");
 const listaCarros = document.getElementById("listaCarros");
+const listaAlugados = document.getElementById("listaAlugados");
 
-// =====================================
-// EVENTOS
-// =====================================
-if (btnLogin) {
-  btnLogin.addEventListener("click", () => {
-    window.location.href = "login.html";
-  });
-}
+btnLogin?.addEventListener("click", () => {
+  window.location.href = "login.html";
+});
 
-if (btnRegistro) {
-  btnRegistro.addEventListener("click", () => {
-    window.location.href = "registro.html";
-  });
-}
+btnRegistro?.addEventListener("click", () => {
+  window.location.href = "registro.html";
+});
 
-if (btnSair) {
-  btnSair.addEventListener("click", () => {
+btnSair?.addEventListener("click", () => {
+  NextDrive.clearStoredUser();
+  NextDrive.showMessage(null, "Você saiu da conta.", "info");
+  window.location.href = "login.html";
+});
 
-    localStorage.removeItem("usuarioLogado");
+document.addEventListener("DOMContentLoaded", async () => {
+  atualizarHeader();
+  configurarPainelDev();
 
-    if (window.showToast) {
-      window.showToast(
-        "Você saiu da conta.",
-        "info"
-      );
-    }
+  await Promise.all([
+    carregarCarrosDisponiveis(),
+    carregarCarrosAlugados()
+  ]);
+});
 
-    window.location.href = "login.html";
-  });
-}
-
-// =====================================
-// INICIALIZAÇÃO
-// =====================================
-document.addEventListener(
-  "DOMContentLoaded",
-  async () => {
-
-    atualizarHeader();
-
-    await carregarCarros();
-
-    await carregarAlugados();
-
-    configurarPainelDev();
-  }
-);
-
-// =====================================
-// HEADER
-// =====================================
 function atualizarHeader() {
+  const usuario = NextDrive.getStoredUser();
+  const usuarioNome = document.getElementById("usuarioNome");
 
-  const usuario = obterUsuarioLogado();
+  if (btnLogin) btnLogin.hidden = Boolean(usuario);
+  if (btnRegistro) btnRegistro.hidden = Boolean(usuario);
+  if (btnSair) btnSair.style.display = usuario ? "inline-block" : "none";
 
-  const usuarioNome =
-    document.getElementById("usuarioNome");
-
-  if (usuario) {
-
-    if (btnLogin) {
-      btnLogin.style.display = "none";
-    }
-
-    if (btnRegistro) {
-      btnRegistro.style.display = "none";
-    }
-
-    if (btnSair) {
-      btnSair.style.display = "inline-block";
-    }
-
-    if (usuarioNome) {
-      usuarioNome.textContent =
-        `Olá, ${usuario.nome} 👋`;
-    }
-
-  } else {
-
-    if (btnLogin) {
-      btnLogin.style.display = "inline-block";
-    }
-
-    if (btnRegistro) {
-      btnRegistro.style.display = "inline-block";
-    }
-
-    if (btnSair) {
-      btnSair.style.display = "none";
-    }
-
-    if (usuarioNome) {
-      usuarioNome.textContent = "";
-    }
+  if (usuarioNome) {
+    usuarioNome.textContent = usuario ? `Olá, ${usuario.nome}` : "";
   }
 }
 
-// =====================================
-// USUÁRIO LOGADO
-// =====================================
-function obterUsuarioLogado() {
+function configurarPainelDev() {
+  const usuario = NextDrive.getStoredUser();
+  const canAccessPanel = usuario && ["admin", "dev"].includes(usuario.role);
 
-  try {
-
-    const usuario = JSON.parse(
-      localStorage.getItem("usuarioLogado")
-    );
-
-    if (!usuario || !usuario.token) {
-      return null;
-    }
-
-    return usuario;
-
-  } catch {
-
-    return null;
-  }
-}
-
-// =====================================
-// CARREGAR CARROS DISPONÍVEIS
-// =====================================
-async function carregarCarros() {
-
-  try {
-
-    const resposta = await fetch(
-      "http://localhost:3000/carros?available=true"
-    );
-
-    const dados = await resposta.json();
-
-    if (!listaCarros) return;
-
-    listaCarros.innerHTML = "";
-
-    const usuarioLogado =
-      obterUsuarioLogado();
-
-    dados.carros.forEach((carro) => {
-
-      const card =
-        document.createElement("div");
-
-      card.classList.add("carro-card");
-
-      const preco =
-        carro.preco_diaria ??
-        carro.preco ??
-        0;
-
-      card.innerHTML = `
-        ${carro.imagem
-          ? `<img src="${carro.imagem}" alt="${carro.modelo}" class="carro-thumb">`
-          : ""
-        }
-
-        <h3>${carro.modelo}</h3>
-
-        <p>${carro.marca}</p>
-
-        <p class="preco">
-          R$ ${preco}/dia
-        </p>
-
-        <button>
-          Alugar
-        </button>
-      `;
-
-      const botao =
-        card.querySelector("button");
-
-      if (!usuarioLogado) {
-
-        botao.disabled = true;
-
-        botao.textContent =
-          "Faça login para alugar";
-
-      } else {
-
-        botao.addEventListener(
-          "click",
-          () => alugarCarro(carro.id)
-        );
-      }
-
-      listaCarros.appendChild(card);
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao carregar carros:",
-      erro
-    );
-
-    if (listaCarros) {
-      listaCarros.innerHTML =
-        "<p>Erro ao carregar os carros.</p>";
-    }
-  }
-}
-
-// =====================================
-// CARREGAR CARROS ALUGADOS
-// =====================================
-async function carregarAlugados() {
-
-  const lista =
-    document.getElementById("listaAlugados");
-
-  if (!lista) return;
-
-  try {
-
-    const resposta = await fetch(
-      "http://localhost:3000/carros?available=false"
-    );
-
-    const dados = await resposta.json();
-
-    lista.innerHTML = "";
-
-    dados.carros.forEach((carro) => {
-
-      const card =
-        document.createElement("div");
-
-      card.className = "carro-card";
-
-      const preco =
-        carro.preco_diaria ??
-        carro.preco ??
-        0;
-
-      card.innerHTML = `
-        ${carro.imagem
-          ? `<img src="${carro.imagem}" alt="${carro.modelo}" class="carro-thumb">`
-          : ""
-        }
-
-        <h3>${carro.modelo}</h3>
-
-        <p>${carro.marca}</p>
-
-        <p class="preco">
-          R$ ${preco}/dia
-        </p>
-
-        <p style="font-weight:700;color:var(--accent-2)">
-          Status: Alugado
-        </p>
-      `;
-
-      lista.appendChild(card);
-    });
-
-  } catch (erro) {
-
-    console.error(
-      "Erro ao carregar alugados:",
-      erro
-    );
-  }
-}
-
-// =====================================
-// ALUGAR CARRO
-// =====================================
-async function alugarCarro(idCarro) {
-
-  const usuario =
-    obterUsuarioLogado();
-
-  if (!usuario) {
-
-    if (window.showToast) {
-
-      window.showToast(
-        "Você precisa estar logado para alugar um carro!",
-        "info"
-      );
-    }
-
+  if (!btnPainelDev || !canAccessPanel) {
     return;
   }
 
+  btnPainelDev.style.display = "inline-block";
+  btnPainelDev.addEventListener("click", () => {
+    window.location.href = "dev.html";
+  });
+}
+
+async function carregarCarrosDisponiveis() {
+  if (!listaCarros) return;
+
   try {
+    const data = await NextDrive.request("/carros?available=true", {
+      auth: false
+    });
+    const usuario = NextDrive.getStoredUser();
 
-    const resposta = await fetch(
-      "http://localhost:3000/alugar",
-      {
-        method: "POST",
+    listaCarros.innerHTML = "";
 
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization":
-            `Bearer ${usuario.token}`
-        },
+    if (!data.carros?.length) {
+      listaCarros.innerHTML = "<p>Nenhum carro disponível no momento.</p>";
+      return;
+    }
 
-        body: JSON.stringify({
-          idCarro
+    data.carros.forEach((carro) => {
+      listaCarros.appendChild(
+        NextDrive.createCarCard(carro, {
+          buttonText: usuario ? "Alugar" : "Faça login para alugar",
+          buttonDisabled: !usuario,
+          onClick: () => alugarCarro(carro.id)
         })
-      }
-    );
-
-    const dados =
-      await resposta.json();
-
-    if (dados.sucesso) {
-
-      if (window.showToast) {
-
-        window.showToast(
-          "Carro alugado com sucesso!",
-          "success"
-        );
-      }
-
-      await carregarCarros();
-
-      await carregarAlugados();
-
-    } else {
-
-      if (window.showToast) {
-
-        window.showToast(
-          dados.mensagem ||
-          "Erro ao alugar o carro.",
-          "error"
-        );
-      }
-    }
-
-  } catch (erro) {
-
-    console.error(erro);
-
-    if (window.showToast) {
-
-      window.showToast(
-        "Erro ao conectar com o servidor.",
-        "error"
       );
-    }
+    });
+  } catch (error) {
+    console.error(error);
+    listaCarros.innerHTML = "<p>Erro ao carregar os carros.</p>";
   }
 }
 
-// =====================================
-// PAINEL DEV
-// =====================================
-function configurarPainelDev() {
+async function carregarCarrosAlugados() {
+  if (!listaAlugados) return;
 
-  const btnPainelDev =
-    document.getElementById("btnPainelDev");
+  try {
+    const data = await NextDrive.request("/carros?available=false", {
+      auth: false
+    });
 
-  const usuarioAtual =
-    obterUsuarioLogado();
+    listaAlugados.innerHTML = "";
 
-  if (
-    btnPainelDev &&
-    usuarioAtual &&
-    (
-      usuarioAtual.role === "dev" ||
-      usuarioAtual.role === "admin"
-    )
-  ) {
+    if (!data.carros?.length) {
+      listaAlugados.innerHTML = "<p>Nenhum carro alugado no momento.</p>";
+      return;
+    }
 
-    btnPainelDev.style.display =
-      "inline-block";
+    data.carros.forEach((carro) => {
+      listaAlugados.appendChild(
+        NextDrive.createCarCard(carro, {
+          status: "Status: Alugado"
+        })
+      );
+    });
+  } catch (error) {
+    console.error(error);
+    listaAlugados.innerHTML = "<p>Erro ao carregar os carros alugados.</p>";
+  }
+}
 
-    btnPainelDev.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "dev.html";
+async function alugarCarro(idCarro) {
+  try {
+    const data = await NextDrive.request("/alugar", {
+      method: "POST",
+      body: {
+        idCarro
       }
-    );
+    });
+
+    NextDrive.showMessage(null, data.mensagem || "Carro alugado com sucesso!", "sucesso");
+
+    await Promise.all([
+      carregarCarrosDisponiveis(),
+      carregarCarrosAlugados()
+    ]);
+  } catch (error) {
+    NextDrive.showMessage(null, error.message || "Erro ao alugar o carro.", "erro");
   }
 }

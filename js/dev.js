@@ -1,181 +1,128 @@
-const API = "http://localhost:3000";
+const usuario = NextDrive.getStoredUser();
+const form = document.getElementById("formCarro");
+const lista = document.getElementById("listaCarros");
+const mensagem = document.getElementById("mensagem");
+const btnVoltar = document.getElementById("btnVoltar");
+const btnSair = document.getElementById("btnSair");
 
-function obterToken() {
+btnVoltar?.addEventListener("click", () => {
+  window.location.href = "index.html";
+});
 
-    try {
-
-        const usuario = JSON.parse(
-            localStorage.getItem("usuarioLogado")
-        );
-
-        return usuario?.token || null;
-
-    } catch {
-
-        return null;
-    }
-}
-
-function obterUsuario() {
-    try {
-        return JSON.parse(
-            localStorage.getItem("usuarioLogado")
-        );
-    } catch {
-        return null;
-    }
-}
+btnSair?.addEventListener("click", () => {
+  NextDrive.clearStoredUser();
+  window.location.href = "login.html";
+});
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (!usuario || !["admin", "dev"].includes(usuario.role)) {
+    document.body.innerHTML = `
+      <main class="erro-acesso">
+        <h2>Acesso negado</h2>
+        <p>Você não possui permissão para acessar esta página.</p>
+        <a href="index.html">Voltar</a>
+      </main>
+    `;
+    return;
+  }
 
-    const usuario = obterUsuario();
+  carregarCarros();
+});
 
-    const form = document.getElementById("formCarro");
-    const lista = document.getElementById("listaCarros");
-    const msg = document.getElementById("mensagem");
+form?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (
+    !form.modelo.value.trim() ||
+    !form.marca.value.trim() ||
+    !form.ano.value ||
+    !form.preco.value
+  ) {
+    NextDrive.showMessage(
+      mensagem,
+      "Preencha todos os campos obrigatórios.",
+      "erro"
+    );
+    return;
+  }
+
+  try {
+
+    const formData = new FormData();
+
+    formData.append(
+      "modelo",
+      form.modelo.value.trim()
+    );
+
+    formData.append(
+      "marca",
+      form.marca.value.trim()
+    );
+
+    formData.append(
+      "ano",
+      form.ano.value
+    );
+
+    formData.append(
+      "preco_diaria",
+      form.preco.value
+    );
 
     if (
-        !usuario ||
-        (
-            usuario.role !== "admin" &&
-            usuario.role !== "dev"
-        )
+      form.imagem.files &&
+      form.imagem.files.length > 0
     ) {
-
-        document.body.innerHTML = `
-            <main class="erro-acesso">
-                <h2>Acesso negado</h2>
-                <p>
-                    Você não possui permissão.
-                </p>
-
-                <a href="index.html">
-                    Voltar
-                </a>
-            </main>
-        `;
-
-        return;
+      formData.append(
+        "imagem",
+        form.imagem.files[0]
+      );
     }
 
-    carregarCarros();
+    const resposta = await fetch(
+      `${NextDrive.API_URL}/carros`,
+      {
+        method: "POST",
 
-    async function carregarCarros() {
+        headers: {
+          Authorization:
+            `Bearer ${NextDrive.getToken()}`
+        },
 
-        try {
-
-            const res = await fetch(`${API}/carros`);
-
-            const dados = await res.json();
-
-            lista.innerHTML = "";
-
-            dados.carros.forEach(carro => {
-
-                const div = document.createElement("div");
-
-                div.className = "carro-card";
-
-                div.innerHTML = `
-                    ${
-                        carro.imagem
-                        ? `
-                            <img
-                                src="${carro.imagem}"
-                            class="carro-thumb"
-                            >
-                        `
-                        : ""
-                    }
-
-                    <h3>${carro.modelo}</h3>
-
-                    <p>${carro.marca}</p>
-
-                    <p>${carro.ano}</p>
-
-                    <p>
-                        R$ ${carro.preco_diaria}/dia
-                    </p>
-
-                    <p>
-                        ${
-                            carro.disponivel
-                            ? "Disponível"
-                            : "Alugado"
-                        }
-                    </p>
-                `;
-
-                lista.appendChild(div);
-            });
-
-        } catch (erro) {
-
-            console.error(erro);
-
-            msg.innerHTML = `
-                Erro ao carregar carros
-            `;
-        }
-    }
-
-    if (form) {
-
-    form.addEventListener(
-        "submit",
-        async (e) => {
-
-            e.preventDefault();
-
-            const body = {
-                modelo: form.modelo.value,
-                marca: form.marca.value,
-                ano: Number(form.ano.value),
-                preco_diaria: Number(form.preco.value),
-                imagem: form.imagem.value
-            };
-
-            try {
-
-                const res = await fetch(
-                    `${API}/carros`,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${obterToken()}`
-                        },
-
-                        body: JSON.stringify(body)
-                    }
-                );
-
-                const dados = await res.json();
-
-                if (!dados.sucesso) {
-
-                    msg.innerHTML = dados.mensagem;
-
-                    return;
-                }
-
-                msg.innerHTML =
-                    "Carro adicionado com sucesso";
-
-                form.reset();
-
-                carregarCarros();
-
-            } catch (erro) {
-
-                console.error(erro);
-
-                msg.innerHTML =
-                    "Erro no servidor";
-            }
-        }
+        body: formData
+      }
     );
-}
+
+    const data = await resposta.json();
+
+    if (!resposta.ok) {
+      throw new Error(
+        data.mensagem ||
+        "Erro ao cadastrar carro."
+      );
+    }
+
+    NextDrive.showMessage(
+      mensagem,
+      data.mensagem ||
+      "Carro adicionado com sucesso.",
+      "sucesso"
+    );
+
+    form.reset();
+
+    await carregarCarros();
+
+  } catch (error) {
+
+    console.error(error);
+
+    NextDrive.showMessage(
+      mensagem,
+      error.message ||
+      "Erro ao cadastrar carro.",
+      "erro"
+    );
+  }
 });

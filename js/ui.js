@@ -1,267 +1,172 @@
-// ======================================
-// SISTEMA GLOBAL DE TOASTS + ANIMAÇÕES
-// ======================================
-
 (function () {
+  const API_URL = "http://localhost:3000";
+  const STORAGE_KEY = "usuarioLogado";
 
-  // ======================================
-  // CRIAR CONTAINER
-  // ======================================
-  function createContainer() {
+  function getToastContainer() {
+    let container = document.getElementById("toast-container");
 
-    const container =
-      document.createElement("div");
-
-    container.id =
-      "toast-container";
-
-    container.style.position =
-      "fixed";
-
-    container.style.right =
-      "1rem";
-
-    container.style.bottom =
-      "1rem";
-
-    container.style.zIndex =
-      "9999";
-
-    container.style.display =
-      "flex";
-
-    container.style.flexDirection =
-      "column";
-
-    container.style.gap =
-      "0.75rem";
-
-    document.body.appendChild(
-      container
-    );
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "toast-container";
+      document.body.appendChild(container);
+    }
 
     return container;
   }
 
-  // ======================================
-  // CONTAINER PRINCIPAL
-  // ======================================
-  const container =
-    document.getElementById(
-      "toast-container"
-    ) || createContainer();
+  function showToast(text, type = "info", timeout = 3500) {
+    const toast = document.createElement("div");
 
-  // ======================================
-  // FUNÇÃO GLOBAL DE TOAST
-  // ======================================
-  window.showToast = function (
-    text,
-    type = "info",
-    timeout = 3500
-  ) {
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute("role", "status");
+    toast.textContent = text;
 
-    const toast =
-      document.createElement("div");
+    getToastContainer().appendChild(toast);
 
-    toast.className =
-      `toast toast-${type}`;
-
-    toast.setAttribute(
-      "role",
-      "status"
-    );
-
-    toast.textContent =
-      text;
-
-    // ======================================
-    // ESTILOS BASE
-    // ======================================
-    toast.style.padding =
-      "14px 18px";
-
-    toast.style.borderRadius =
-      "12px";
-
-    toast.style.fontWeight =
-      "600";
-
-    toast.style.fontSize =
-      "14px";
-
-    toast.style.color =
-      "#fff";
-
-    toast.style.boxShadow =
-      "0 10px 30px rgba(0,0,0,0.2)";
-
-    toast.style.opacity =
-      "0";
-
-    toast.style.transform =
-      "translateY(20px)";
-
-    toast.style.transition =
-      "all 0.25s ease";
-
-    toast.style.maxWidth =
-      "320px";
-
-    toast.style.wordBreak =
-      "break-word";
-
-    // ======================================
-    // CORES
-    // ======================================
-    switch (type) {
-
-      case "success":
-
-        toast.style.background =
-          "#16a34a";
-
-        break;
-
-      case "error":
-
-        toast.style.background =
-          "#dc2626";
-
-        break;
-
-      case "warning":
-
-        toast.style.background =
-          "#f59e0b";
-
-        break;
-
-      default:
-
-        toast.style.background =
-          "#2563eb";
-    }
-
-    // adiciona ao container
-    container.appendChild(
-      toast
-    );
-
-    // anima entrada
     requestAnimationFrame(() => {
-
-      toast.style.opacity =
-        "1";
-
-      toast.style.transform =
-        "translateY(0)";
+      toast.classList.add("toast--visible");
     });
 
-    // ======================================
-    // REMOVER AUTOMATICAMENTE
-    // ======================================
-    const id = setTimeout(() => {
-
-      toast.style.opacity =
-        "0";
-
-      toast.style.transform =
-        "translateY(20px)";
-
-      toast.addEventListener(
-        "transitionend",
-        () => {
-          toast.remove();
-        }
-      );
-
-      clearTimeout(id);
-
+    setTimeout(() => {
+      toast.classList.remove("toast--visible");
+      toast.addEventListener("transitionend", () => toast.remove(), {
+        once: true
+      });
     }, timeout);
-  };
+  }
 
-  // ======================================
-  // MICROINTERAÇÕES BOTÕES
-  // ======================================
-  function enhanceButtons() {
+  function showMessage(element, text, type = "info") {
+    if (element) {
+      element.textContent = text;
+      element.className = `mensagem ${type}`;
+    }
 
-    const buttons =
-      document.querySelectorAll(
-        "button"
-      );
+    const toastType = type === "sucesso" ? "success" : type === "erro" ? "error" : type;
+    showToast(text, toastType);
+  }
 
-    buttons.forEach(btn => {
+  function getStoredUser() {
+    try {
+      const user = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      return user?.token ? user : null;
+    } catch {
+      return null;
+    }
+  }
 
-      if (btn.dataset.enhanced) {
-        return;
-      }
+  function getToken() {
+    return getStoredUser()?.token || null;
+  }
 
-      btn.dataset.enhanced =
-        "1";
+  function setStoredUser(user, token) {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...user,
+        token
+      })
+    );
+  }
 
-      btn.style.transition =
-        "transform 0.15s ease";
+  function clearStoredUser() {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 
-      btn.addEventListener(
-        "pointerdown",
-        () => {
+  async function request(path, options = {}) {
+    const token = options.auth === false ? null : getToken();
+    const headers = {
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers
+    };
 
-          btn.classList.add(
-            "pressed"
-          );
+    const response = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined
+    });
 
-          btn.style.transform =
-            "scale(0.96)";
-        }
-      );
+    const data = await response.json().catch(() => ({}));
 
-      function resetButton() {
+    if (!response.ok) {
+      throw new Error(data.mensagem || `Erro HTTP ${response.status}`);
+    }
 
-        btn.classList.remove(
-          "pressed"
-        );
+    return data;
+  }
 
-        btn.style.transform =
-          "scale(1)";
-      }
-
-      btn.addEventListener(
-        "pointerup",
-        resetButton
-      );
-
-      btn.addEventListener(
-        "pointerleave",
-        resetButton
-      );
+  function formatCurrency(value) {
+    return Number(value || 0).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL"
     });
   }
 
-  // ======================================
-  // EXECUÇÃO INICIAL
-  // ======================================
-  document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+  function createCarCard(carro, options = {}) {
+    const card = document.createElement("div");
+    const dailyPrice = carro.preco_diaria ?? carro.preco ?? 0;
 
-      enhanceButtons();
+    card.className = "carro-card";
+    card.innerHTML = `
+      ${
+        carro.imagem
+          ? `<img src="${carro.imagem}" alt="${carro.modelo}" class="carro-thumb">`
+          : ""
+      }
+      <h3>${carro.modelo}</h3>
+      <p>${carro.marca}</p>
+      ${carro.ano ? `<p>${carro.ano}</p>` : ""}
+      <p class="preco">${formatCurrency(dailyPrice)}/dia</p>
+      ${options.status ? `<p class="status-text">${options.status}</p>` : ""}
+    `;
+
+    if (options.buttonText) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = options.buttonText;
+      button.disabled = Boolean(options.buttonDisabled);
+
+      if (options.onClick && !button.disabled) {
+        button.addEventListener("click", options.onClick);
+      }
+
+      card.appendChild(button);
     }
-  );
 
-  // ======================================
-  // OBSERVA NOVOS BOTÕES
-  // ======================================
-  const observer =
-    new MutationObserver(
-      enhanceButtons
-    );
+    return card;
+  }
 
-  observer.observe(
-    document.body,
-    {
-      childList: true,
-      subtree: true
-    }
-  );
+  function enhanceButtons() {
+    document.querySelectorAll("button").forEach((button) => {
+      if (button.dataset.enhanced) {
+        return;
+      }
 
+      button.dataset.enhanced = "1";
+      button.addEventListener("pointerdown", () => button.classList.add("pressed"));
+
+      const reset = () => button.classList.remove("pressed");
+      button.addEventListener("pointerup", reset);
+      button.addEventListener("pointerleave", reset);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", enhanceButtons);
+
+  new MutationObserver(enhanceButtons).observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  window.showToast = showToast;
+  window.NextDrive = {
+    API_URL,
+    clearStoredUser,
+    createCarCard,
+    getStoredUser,
+    getToken,
+    request,
+    setStoredUser,
+    showMessage
+  };
 })();
