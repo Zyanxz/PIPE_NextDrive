@@ -23,6 +23,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicDir = path.resolve(__dirname, "..");
 
+const jsonParser = express.json();
+
 const usuarioSchema = z.object({
   nome: z.string().trim().min(1),
   email: z.string().trim().email(),
@@ -60,7 +62,8 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-app.use(express.json());
+
+// express.json() removido do escopo global — aplicado por rota
 app.use(express.static(publicDir, { index: false }));
 app.use(rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -154,7 +157,7 @@ function verificarAdmin(req, res, next) {
   return next();
 }
 
-app.post("/registro", async (req, res) => {
+app.post("/registro", jsonParser, async (req, res) => {
   console.log("POST /registro recebido");
   console.log(req.body);
 
@@ -208,7 +211,7 @@ app.post("/registro", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", jsonParser, async (req, res) => {
   try {
     const { email, senha } = parse(z.object({
       email: z.string().trim().email(),
@@ -265,11 +268,16 @@ app.get("/carros", async (req, res) => {
   }
 });
 
-
+// Rota multipart/form-data — sem jsonParser, Multer cuida do parsing
 app.post(
   "/carros",
   verificarToken,
   verificarAdmin,
+  (req, res, next) => {
+    console.log("Content-Type:", req.headers["content-type"]);
+    console.log("Body antes do multer:", req.body);
+    next();
+  },
   upload.single("imagem"),
   async (req, res) => {
 
@@ -347,7 +355,7 @@ app.post(
   }
 );
 
-app.post("/alugar", verificarToken, async (req, res) => {
+app.post("/alugar", verificarToken, jsonParser, async (req, res) => {
   const client = await pool.connect();
 
   try {
@@ -389,7 +397,7 @@ app.post("/alugar", verificarToken, async (req, res) => {
   }
 });
 
-app.post("/devolver", verificarToken, async (req, res) => {
+app.post("/devolver", verificarToken, jsonParser, async (req, res) => {
   const client = await pool.connect();
 
   try {
@@ -519,7 +527,7 @@ app.get("/usuarios/:id", verificarToken, async (req, res) => {
   }
 });
 
-app.put("/usuarios/:id", verificarToken, async (req, res) => {
+app.put("/usuarios/:id", verificarToken, jsonParser, async (req, res) => {
   try {
     const id = parse(idSchema, req.params.id);
 
