@@ -3,53 +3,113 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NextDrive | Início</title>
+  <title>NextDrive | Mobilidade Inteligente</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="sidebar" class="sidebar">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar" class="sidebar" aria-hidden="true">
     <div class="sidebar-header">
-      <h2>NextDrive</h2>
+      <img src="uploads/logonxd.jpeg" alt="NextDrive" class="logo-sidebar">
       <button id="btnFecharSidebar" class="close-btn" type="button" aria-label="Fechar menu">x</button>
     </div>
 
-    <nav class="sidebar-nav">
+    <nav class="sidebar-nav" aria-label="Menu principal">
       <a href="index.html">Início</a>
-      <a href="alugueis.html">Meus Aluguéis</a>
+      <a href="alugueis.html">Minhas Reservas</a>
       <a href="perfil.html">Meu Perfil</a>
     </nav>
   </div>
 
-  <div id="sidebarOverlay" class="sidebar-overlay"></div>
+  <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
 
+  <!-- HEADER -->
   <header class="topo">
-    <h1>NextDrive</h1>
+    <div class="logo-area">
+      <img src="uploads/logonxd.jpeg" alt="NextDrive" class="logo">
+      <div>
+        <h1>NextDrive</h1>
+        <span>Soluções inteligentes em mobilidade</span>
+      </div>
+    </div>
 
-    <nav>
+    <nav class="nav-actions" aria-label="Ações do usuário">
       <span id="usuarioNome"></span>
-      <button id="btnLogin" type="button">Login</button>
-      <button id="btnRegistro" type="button">Registrar</button>
-      <button id="btnSair" type="button" style="display:none;">Sair</button>
-      <button id="btnPainelDev" type="button" style="display:none;">Painel Dev</button>
+      <button id="btnLogin" class="btn-outline" type="button">Entrar</button>
+      <button id="btnRegistro" class="btn-primary" type="button">Criar Conta</button>
+      <button id="btnToggleTheme" class="btn-outline" type="button">Dark</button>
+      <button id="btnSair" class="btn-outline" type="button" style="display:none;">Sair</button>
+      <button id="btnPainelDev" class="btn-dev" type="button" style="display:none;">Painel Administrativo</button>
     </nav>
 
-    <button id="btnMenu" class="menu-btn" type="button" aria-label="Abrir menu">Menu</button>
+    <button id="btnMenu" class="menu-btn" type="button" aria-label="Abrir menu">?</button>
   </header>
 
-  <main>
-    <section class="section-heading">
-      <h2>Carros disponíveis para aluguel</h2>
-    </section>
-    <div class="carros-container" id="listaCarros"></div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="badge">Mobilidade inteligente para sua jornada</span>
+      <h2>Reserve o veículo certo para cada ocasião com conforto e segurança.</h2>
+      <p>NextDrive combina tecnologia e atendimento para aproximar você do carro ideal, seja para viagem, trabalho ou lazer.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" type="button">Ver carros</button>
+        <button class="btn-outline" type="button">Saiba mais</button>
+      </div>
+    </div>
 
-    <section class="section-heading section-heading--spaced">
-      <h2>Carros alugados</h2>
+    <div class="hero-image">
+      <img src="uploads/logonxd.jpeg" alt="Veículo NextDrive" loading="lazy">
+    </div>
+  </section>
+
+  <!-- ESTATÍSTICAS -->
+  <section class="stats" aria-label="Estatísticas da plataforma">
+    <div class="stat-card">
+      <h3>+1.500</h3>
+      <p>Clientes satisfeitos</p>
+    </div>
+    <div class="stat-card">
+      <h3>+300</h3>
+      <p>Veículos disponíveis</p>
+    </div>
+    <div class="stat-card">
+      <h3>24h</h3>
+      <p>Suporte em tempo real</p>
+    </div>
+    <div class="stat-card">
+      <h3>99,9%</h3>
+      <p>Plataforma online</p>
+    </div>
+  </section>
+
+  <main>
+    <section class="secao">
+      <div class="titulo-secao">
+        <h2>Veículos Disponíveis</h2>
+        <span>Escolha o modelo ideal para sua necessidade.</span>
+      </div>
+      <div class="carros-container" id="listaCarros"></div>
     </section>
-    <div class="carros-container" id="listaAlugados"></div>
+
+    <section class="secao">
+      <div class="titulo-secao">
+        <h2>Carros em Uso</h2>
+        <span>Veículos reservados e em trânsito.</span>
+      </div>
+      <div class="carros-container" id="listaAlugados"></div>
+    </section>
   </main>
+
+  <footer>
+    <img src="uploads/logonxd.jpeg" alt="Logo NextDrive">
+    <h3>NextDrive</h3>
+    <p>Mobilidade inteligente que conecta pessoas e veículos com rapidez, segurança e praticidade.</p>
+    <small>© 2026 NextDrive • Projeto Acadêmico</small>
+  </footer>
 
   <script src="js/sidebar.js"></script>
   <script src="js/ui.js"></script>
