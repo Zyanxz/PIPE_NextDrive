@@ -47,82 +47,86 @@ form?.addEventListener("submit", async (event) => {
   }
 
   try {
-
     const formData = new FormData();
 
-    formData.append(
-      "modelo",
-      form.modelo.value.trim()
-    );
+    formData.append("modelo", form.modelo.value.trim());
+    formData.append("marca", form.marca.value.trim());
+    formData.append("ano", form.ano.value);
+    formData.append("preco_diaria", form.preco.value);
 
-    formData.append(
-      "marca",
-      form.marca.value.trim()
-    );
-
-    formData.append(
-      "ano",
-      form.ano.value
-    );
-
-    formData.append(
-      "preco_diaria",
-      form.preco.value
-    );
-
-    if (
-      form.imagem.files &&
-      form.imagem.files.length > 0
-    ) {
-      formData.append(
-        "imagem",
-        form.imagem.files[0]
-      );
+    if (form.imagem.files && form.imagem.files.length > 0) {
+      formData.append("imagem", form.imagem.files[0]);
     }
 
-    const resposta = await fetch(
-      `${NextDrive.API_URL}/carros`,
-      {
-        method: "POST",
-
-        headers: {
-          Authorization:
-            `Bearer ${NextDrive.getToken()}`
-        },
-
-        body: formData
-      }
-    );
+    const resposta = await fetch(`${NextDrive.API_URL}/carros`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${NextDrive.getToken()}`
+      },
+      body: formData
+    });
 
     const data = await resposta.json();
 
     if (!resposta.ok) {
-      throw new Error(
-        data.mensagem ||
-        "Erro ao cadastrar carro."
-      );
+      throw new Error(data.mensagem || "Erro ao cadastrar carro.");
     }
 
     NextDrive.showMessage(
       mensagem,
-      data.mensagem ||
-      "Carro adicionado com sucesso.",
+      data.mensagem || "Carro adicionado com sucesso.",
       "sucesso"
     );
 
     form.reset();
-
     await carregarCarros();
 
   } catch (error) {
-
     console.error(error);
-
     NextDrive.showMessage(
       mensagem,
-      error.message ||
-      "Erro ao cadastrar carro.",
+      error.message || "Erro ao cadastrar carro.",
       "erro"
     );
   }
 });
+
+async function carregarCarros() {
+  try {
+    const resposta = await fetch(`${NextDrive.API_URL}/carros`, {
+      headers: {
+        Authorization: `Bearer ${NextDrive.getToken()}`
+      }
+    });
+
+    const data = await resposta.json();
+
+    if (!resposta.ok) {
+      throw new Error(data.mensagem || "Erro ao carregar carros.");
+    }
+
+    lista.innerHTML = "";
+
+    if (data.carros.length === 0) {
+      lista.innerHTML = "<p>Nenhum carro cadastrado.</p>";
+      return;
+    }
+
+    for (const carro of data.carros) {
+      const item = document.createElement("div");
+      item.className = "carro-card";
+      item.innerHTML = `
+        ${carro.imagem ? `<img src="${NextDrive.API_URL}${carro.imagem}" alt="${carro.modelo}" class="carro-thumb">` : ""}
+        <h3>${carro.modelo} (${carro.marca})</h3>
+        <p>Ano: ${carro.ano}</p>
+        <p>Diária: R$ ${Number(carro.preco_diaria).toFixed(2)}</p>
+        <p>${carro.disponivel ? "Disponível" : "Indisponível"}</p>
+      `;
+      lista.appendChild(item);
+    }
+
+  } catch (error) {
+    console.error(error);
+    NextDrive.showMessage(mensagem, error.message || "Erro ao carregar carros.", "erro");
+  }
+}

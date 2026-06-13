@@ -1,6 +1,33 @@
 (function () {
   const API_URL = "http://localhost:3000";
   const STORAGE_KEY = "usuarioLogado";
+  const THEME_KEY = "nextdriveTheme";
+
+  function setTheme(theme) {
+    const dark = theme === "dark";
+    document.body.classList.toggle("dark-mode", dark);
+    localStorage.setItem(THEME_KEY, theme);
+    const toggle = document.getElementById("btnToggleTheme");
+    if (toggle) {
+      toggle.textContent = dark ? "Light" : "Dark";
+    }
+  }
+
+  function loadTheme() {
+    const stored = localStorage.getItem(THEME_KEY);
+    setTheme(stored === "dark" ? "dark" : "light");
+  }
+
+  function toggleTheme() {
+    setTheme(document.body.classList.contains("dark-mode") ? "light" : "dark");
+  }
+
+  function initThemeToggle() {
+    const toggle = document.getElementById("btnToggleTheme");
+    if (toggle) {
+      toggle.addEventListener("click", toggleTheme);
+    }
+  }
 
   function getToastContainer() {
     let container = document.getElementById("toast-container");
@@ -103,39 +130,36 @@
   }
 
   function createCarCard(carro, options = {}) {
-    const card = document.createElement("div");
-    const dailyPrice = carro.preco_diaria ?? carro.preco ?? 0;
+  const card = document.createElement("div");
+  const dailyPrice = carro.preco_diaria ?? carro.preco ?? 0;
 
-    card.className = "carro-card";
-    card.innerHTML = `
-      ${
-        carro.imagem
-          ? `<img src="${carro.imagem}" alt="${carro.modelo}" class="carro-thumb">`
-          : ""
-      }
-      <h3>${carro.modelo}</h3>
-      <p>${carro.marca}</p>
-      ${carro.ano ? `<p>${carro.ano}</p>` : ""}
-      <p class="preco">${formatCurrency(dailyPrice)}/dia</p>
-      ${options.status ? `<p class="status-text">${options.status}</p>` : ""}
-    `;
+  const imagemUrl =
+    carro.imagem
+      ? `${API_URL}${carro.imagem}`
+      : "";
 
-    if (options.buttonText) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.textContent = options.buttonText;
-      button.disabled = Boolean(options.buttonDisabled);
+  card.className = "carro-card";
 
-      if (options.onClick && !button.disabled) {
-        button.addEventListener("click", options.onClick);
-      }
-
-      card.appendChild(button);
+  card.innerHTML = `
+    ${
+      carro.imagem
+        ? `<img
+             src="${imagemUrl}"
+             alt="${carro.modelo}"
+             class="carro-thumb"
+           >`
+        : ""
     }
 
-    return card;
-  }
+    <h3>${carro.modelo}</h3>
+    <p>${carro.marca}</p>
+    ${carro.ano ? `<p>${carro.ano}</p>` : ""}
+    <p class="preco">${formatCurrency(dailyPrice)}/dia</p>
+    ${options.status ? `<p class="status-text">${options.status}</p>` : ""}
+  `;
 
+  return card;
+  }
   function enhanceButtons() {
     document.querySelectorAll("button").forEach((button) => {
       if (button.dataset.enhanced) {
@@ -151,7 +175,11 @@
     });
   }
 
-  document.addEventListener("DOMContentLoaded", enhanceButtons);
+  document.addEventListener("DOMContentLoaded", () => {
+    loadTheme();
+    initThemeToggle();
+    enhanceButtons();
+  });
 
   new MutationObserver(enhanceButtons).observe(document.body, {
     childList: true,
