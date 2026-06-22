@@ -1,0 +1,74 @@
+O que o projeto já faz bem (concorrência existente)
+O código já tem controle de concorrência real em dois pontos críticos:
+POST /alugar e POST /devolver usam transações com FOR UPDATE (pessimistic locking):
+jsawait client.query("SELECT * FROM carros WHERE id = $1 FOR UPDATE", [idCarro]);
+Isso bloqueia a linha no banco enquanto a transação está aberta — se dois usuários tentarem alugar o mesmo carro ao mesmo tempo, o segundo vai esperar. É o padrão correto para esse problema.
+
+Ideias de paralelização para implementar e apresentar
+1. Promise.all no dashboard do admin
+Atualmente as rotas fazem uma query por vez. Em uma tela de admin que precisa de carros + locações + usuários, dá pra buscar tudo em paralelo:
+js// Antes: sequencial
+const carros = await pool.query("SELECT * FROM carros");
+const locacoes = await pool.query("SELECT * FROM locacoes");
+const usuarios = await pool.query("SELECT * FROM usuarios");
+
+// Depois: paralelo com Promise.all
+const [carros, locacoes, usuarios] = await Promise.all([
+  pool.query("SELECT * FROM carros"),
+  pool.query("SELECT * FROM locacoes"),
+  pool.query("SELECT id, nome, email FROM usuarios")
+]);
+Impacto visual: mostra redução de latência com 3 queries rodando em paralelo (ex: de ~90ms para ~30ms).
+
+2. Rota de registro com validação paralela
+No POST /registro, a verificação de e-mail e o hash da senha poderiam rodar em paralelo (hoje são sequenciais):
+js// Paralelo: verifica e-mail e já inicia o hash ao mesmo tempo
+const [usuarioExiste, senhaHash] = await Promise.all([
+  pool.query("SELECT id FROM usuarios WHERE email = $1", [dados.email]),
+  bcrypt.hash(dados.senha, 10)
+]);
+
+if (usuarioExiste.rows.length > 0) {
+  return fail(res, 400, "E-mail já cadastrado.");
+}
+// senhaHash já está pronto, sem esperar extra
+Impacto: bcrypt com custo 10 leva ~100ms. Rodar em paralelo com a query do banco economiza tempo real.
+
+3. Teste de race condition em /alugar (demonstrar o FOR UPDATE)
+Esse é o mais impactante para apresentação — mostra o problema sem o lock e a solução com o lock:
+js// Teste que dispara 10 requisições simultâneas para alugar o mesmo carro
+const requests = Array.from({ length: 10 }, () =>
+  fetch("/alugar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ idCarro: 1 })
+  })
+);
+
+const results = await Promise.all(requests);
+// Resultado esperado: apenas 1 sucesso, 9 "Carro indisponível"
+Isso demonstra que o FOR UPDATE funciona corretamente — sem ele, dois usuários conseguiriam alugar o mesmo carro.
+
+4. Pool de conexões configurado explicitamente
+O connection.js usa o Pool padrão do pg mas sem configuração explícita. Para apresentação, vale expor isso:
+jsconst pool = new Pool({
+  // ... configs atuais
+  max: 10,          // máximo de conexões simultâneas
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+Ponto de discussão: o pool já gerencia concorrência automaticamente — múltiplas requisições simultâneas pegam conexões diferentes do pool sem bloquear umas às outras.
+
+5. GET /me/locacoes com enriquecimento paralelo (opcional avançado)
+Se quiser expandir a rota para buscar detalhes extras (ex: fotos dos carros separadamente), pode usar Promise.all no array de locações:
+jsconst locacoes = resultado.rows;
+const locacoesComDetalhes = await Promise.all(
+  locacoes.map(async (loc) => {
+    const carro = await pool.query("SELECT imagem FROM carros WHERE id = $1", [loc.carro_id]);
+    return { ...loc, imagem: carro.rows[0]?.imagem };
+  })
+);
+
+Resumo para a apresentação
+OndeTécnicaO que demonstra/alugar + /devolverFOR UPDATE + transaçãoRace condition + solução com lock pessimista/registroPromise.allParalelismo de I/O (bcrypt + query)Dashboard adminPromise.allMúltiplas queries em paraleloconnection.jsPool configuradoGerenciamento automático de concorrênciaTeste de carga10x fetch simultâneosProva que o lock funciona
+O ponto mais forte para apresentar é o teste de race condition no /alugar — é visual, concreto e mostra que vocês pensaram em concorrência de verdade.
