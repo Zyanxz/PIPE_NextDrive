@@ -1,0 +1,260 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.pres{max-width:680px;padding:0}
+.slide{padding:2rem 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.slide:last-child{border-bottom:none}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:12px;letter-spacing:.04em;text-transform:uppercase}
+.tag-intro{background:#EEEDFE;color:#3C3489}
+.tag-backend{background:#E6F1FB;color:#0C447C}
+.tag-conc{background:#FAEEDA;color:#633806}
+.tag-teste{background:#EAF3DE;color:#27500A}
+.tag-falha{background:#FCEBEB;color:#791F1F}
+.tag-future{background:#E1F5EE;color:#085041}
+h1{font-size:22px;font-weight:500;color:var(--color-text-primary);margin-bottom:.5rem}
+h2{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:.75rem}
+h3{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:.4rem}
+p{font-size:15px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:.75rem}
+p:last-child{margin-bottom:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:1rem 0}
+.card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem 1rem}
+.card-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.card-val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.card-val.green{color:#0F6E56}
+.card-val.amber{color:#854F0B}
+.card-val.red{color:#A32D2D}
+.code-block{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:.875rem 1rem;font-family:var(--font-mono);font-size:12.5px;color:var(--color-text-primary);line-height:1.7;margin:.75rem 0;overflow-x:auto;white-space:pre}
+.kw{color:#534AB7}.cm{color:#888780}.str{color:#0F6E56}.fn{color:#185FA5}
+.row{display:flex;gap:10px;margin:.75rem 0;flex-wrap:wrap}
+.pill{font-size:12px;padding:4px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)}
+.pill.ok{background:#EAF3DE;color:#27500A;border-color:#3B6D11}
+.pill.warn{background:#FAEEDA;color:#633806;border-color:#854F0B}
+.pill.bad{background:#FCEBEB;color:#791F1F;border-color:#A32D2D}
+.step-list{margin:.75rem 0}
+.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:.75rem}
+.step-num{min-width:24px;height:24px;border-radius:50%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--color-text-secondary)}
+.step-body{flex:1}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:.5rem 0}
+.warn-box{border-left:3px solid #EF9F27;background:#FAEEDA;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:.75rem 1rem;margin:.75rem 0}
+.warn-box p{color:#633806}
+.ok-box{border-left:3px solid #1D9E75;background:#E1F5EE;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:.75rem 1rem;margin:.75rem 0}
+.ok-box p{color:#085041}
+.bad-box{border-left:3px solid #E24B4A;background:#FCEBEB;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:.75rem 1rem;margin:.75rem 0}
+.bad-box p{color:#791F1F}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:.75rem 0}
+@media(max-width:520px){.two-col{grid-template-columns:1fr}}
+.mini-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.route-row{display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.route-row:last-child{border-bottom:none}
+.method{font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;font-family:var(--font-mono);min-width:48px;text-align:center}
+.get{background:#E6F1FB;color:#0C447C}
+.post{background:#EAF3DE;color:#27500A}
+.put{background:#FAEEDA;color:#633806}
+.route-path{font-family:var(--font-mono);font-size:13px;color:var(--color-text-primary);flex:1}
+.route-note{font-size:12px;color:var(--color-text-secondary)}
+</style>
+
+<div class="pres">
+
+<div class="slide">
+  <span class="tag tag-intro">Introdução</span>
+  <h1>NextDrive — Sistema de Locação de Veículos</h1>
+  <p>API REST em Node.js + Express com banco de dados PostgreSQL. O sistema permite cadastro de usuários, listagem e aluguel de carros, controle de locações e um painel administrativo.</p>
+  <div class="cards">
+    <div class="card"><div class="card-label">Linguagem</div><div class="card-val">Node.js</div></div>
+    <div class="card"><div class="card-label">Framework</div><div class="card-val">Express</div></div>
+    <div class="card"><div class="card-label">Banco</div><div class="card-val">PostgreSQL</div></div>
+    <div class="card"><div class="card-label">Rotas implementadas</div><div class="card-val green">9</div></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag tag-backend">Backend</span>
+  <h2>Arquitetura e rotas</h2>
+  <p>Todas as rotas passam por middlewares de validação com <code>zod</code>, autenticação JWT e rate limiting. A lógica de negócio está concentrada em <code>server.js</code>.</p>
+  <div style="margin:.75rem 0">
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/registro</span><span class="route-note">cria usuário, hash bcrypt</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/login</span><span class="route-note">autentica, retorna JWT</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/carros</span><span class="route-note">lista carros (filtro ?available)</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/carros</span><span class="route-note">admin only, upload de imagem</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/alugar</span><span class="route-note">transação + lock pessimista</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/devolver</span><span class="route-note">transação + lock pessimista</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/me/locacoes</span><span class="route-note">histórico do usuário logado</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/usuarios/:id</span><span class="route-note">perfil (próprio ou admin)</span></div>
+    <div class="route-row"><span class="method put">PUT</span><span class="route-path">/usuarios/:id</span><span class="route-note">atualiza perfil</span></div>
+  </div>
+  <div class="ok-box"><p>Middlewares <code>verificarToken</code> e <code>verificarAdmin</code> protegem todas as rotas sensíveis. Pool de conexões do <code>pg</code> gerencia concorrência de banco automaticamente.</p></div>
+</div>
+
+<div class="slide">
+  <span class="tag tag-conc">Concorrência</span>
+  <h2>Como o sistema lida com acesso simultâneo</h2>
+  <p>O ponto crítico é o aluguel: dois usuários não podem pegar o mesmo carro ao mesmo tempo. O sistema usa duas técnicas combinadas:</p>
+  <div class="two-col">
+    <div class="card">
+      <h3>Transação ACID</h3>
+      <p style="font-size:13px">BEGIN / COMMIT / ROLLBACK garantem que todas as operações do aluguel ocorrem juntas ou nenhuma ocorre.</p>
+    </div>
+    <div class="card">
+      <h3>FOR UPDATE (lock pessimista)</h3>
+      <p style="font-size:13px">A linha do carro é bloqueada no banco enquanto a transação está aberta. Outras conexões aguardam.</p>
+    </div>
+  </div>
+  <div class="code-block"><span class="cm">// /alugar — trecho central</span>
+<span class="kw">await</span> client.<span class="fn">query</span>(<span class="str">"BEGIN"</span>);
+<span class="kw">const</span> carro = <span class="kw">await</span> client.<span class="fn">query</span>(
+  <span class="str">"SELECT * FROM carros WHERE id = $1 FOR UPDATE"</span>, [idCarro]
+);
+<span class="cm">// ↑ bloqueia a linha — concorrente aguarda aqui</span>
+<span class="kw">if</span> (!carro.rows[0].disponivel) <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">"Carro indisponível."</span>);
+<span class="kw">await</span> client.<span class="fn">query</span>(<span class="str">"UPDATE carros SET disponivel = false ..."</span>);
+<span class="kw">await</span> client.<span class="fn">query</span>(<span class="str">"COMMIT"</span>);</div>
+  <div class="ok-box"><p>Resultado: mesmo com 10 requisições simultâneas para o mesmo carro, apenas 1 vai ter sucesso. As demais recebem "Carro indisponível." — comportamento correto.</p></div>
+</div>
+
+<div class="slide">
+  <span class="tag tag-conc">Paralelização</span>
+  <h2>Onde o sistema já usa <code>Promise.all</code></h2>
+  <p>No frontend (<code>index.js</code>), ao carregar a página, as duas listas de carros são buscadas em paralelo — não uma depois da outra:</p>
+  <div class="code-block"><span class="cm">// index.js — carregamento paralelo no DOMContentLoaded</span>
+<span class="kw">await</span> <span class="fn">Promise.all</span>([
+  <span class="fn">carregarCarrosDisponiveis</span>(),
+  <span class="fn">carregarCarrosAlugados</span>()
+]);
+<span class="cm">// Ambas as requisições disparam ao mesmo tempo</span></div>
+  <div class="cards">
+    <div class="card"><div class="card-label">Sem Promise.all</div><div class="card-val amber">~200ms</div></div>
+    <div class="card"><div class="card-label">Com Promise.all</div><div class="card-val green">~100ms</div></div>
+    <div class="card"><div class="card-label">Ganho estimado</div><div class="card-val green">50%</div></div>
+  </div>
+  <h3 style="margin-top:1rem">Oportunidade não aproveitada ainda</h3>
+  <div class="code-block"><span class="cm">// /registro — hoje sequencial, poderia ser paralelo:</span>
+<span class="kw">const</span> [usuarioExiste, senhaHash] = <span class="kw">await</span> <span class="fn">Promise.all</span>([
+  pool.<span class="fn">query</span>(<span class="str">"SELECT id FROM usuarios WHERE email = $1"</span>, [email]),
+  bcrypt.<span class="fn">hash</span>(dados.senha, <span class="str">10</span>)  <span class="cm">// ~100ms, roda ao mesmo tempo</span>
+]);
+<span class="cm">// Se email existir, descarta o hash — sem dano</span></div>
+</div>
+
+<div class="slide">
+  <span class="tag tag-teste">Testes</span>
+  <h2>Testes de concorrência — como demonstrar ao vivo</h2>
+  <div class="step-list">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><h3>Preparar o cenário</h3><p style="font-size:13px">Garantir que um carro com id=1 existe e está disponível no banco. Ter pelo menos 2 tokens JWT válidos.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><h3>Disparar 10 requisições simultâneas</h3>
+<div class="code-block" style="font-size:11.5px"><span class="kw">const</span> requests = <span class="fn">Array.from</span>({ length: <span class="str">10</span> }, () =>
+  <span class="fn">fetch</span>(<span class="str">"/alugar"</span>, {
+    method: <span class="str">"POST"</span>,
+    headers: { <span class="str">"Content-Type"</span>: <span class="str">"application/json"</span>,
+               <span class="str">"Authorization"</span>: <span class="str">`Bearer ${token}`</span> },
+    body: <span class="fn">JSON.stringify</span>({ idCarro: <span class="str">1</span> })
+  })
+);
+<span class="kw">const</span> results = <span class="kw">await</span> <span class="fn">Promise.all</span>(requests);
+<span class="kw">const</span> respostas = <span class="kw">await</span> <span class="fn">Promise.all</span>(results.<span class="fn">map</span>(r => r.<span class="fn">json</span>()));
+console.<span class="fn">log</span>(respostas.<span class="fn">filter</span>(r => r.sucesso).<span class="str">length</span>, <span class="str">"sucesso(s)"</span>);
+<span class="cm">// Resultado esperado: exatamente 1 sucesso, 9 "Carro indisponível."</span></div>
+</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><h3>Resultado esperado</h3><p style="font-size:13px">Exatamente <strong>1 sucesso</strong> e 9 mensagens "Carro indisponível." — o FOR UPDATE funcionou. Qualquer outro resultado seria um bug de concorrência.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><h3>Teste de devolução com race condition</h3><p style="font-size:13px">Disparar 5 requisições de devolução para a mesma locação. Apenas 1 deve ter sucesso — as outras recebem "Locação já finalizada."</p></div></div>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag tag-falha">Falhas identificadas</span>
+  <h2>Problemas reais no código atual</h2>
+
+  <div class="bad-box">
+    <h3>1. Token JWT não tem refresh — expira em 24h sem renovação</h3>
+    <p>O token é gerado uma vez no login com <code>expiresIn: "24h"</code> e não existe rota de refresh. Após 24h, o usuário perde a sessão sem aviso e precisa logar de novo.</p>
+  </div>
+
+  <div class="bad-box">
+    <h3>2. CPF e CNH não têm validação de formato</h3>
+    <p>O schema Zod aceita qualquer string não vazia para CPF e CNH. Qualquer valor como "abc" ou "00000000000" passa na validação. Não há verificação de dígitos, máscara ou unicidade de CPF.</p>
+  </div>
+
+  <div class="bad-box">
+    <h3>3. Senha no retorno do registro</h3>
+    <p>No <code>POST /registro</code>, o retorno usa <code>resultado.rows[0]</code> direto — que inclui o campo <code>senha</code> (hash). Deveria usar <code>publicUser()</code> como as outras rotas fazem.</p>
+  </div>
+
+  <div class="bad-box">
+    <h3>4. Rate limit único para todas as rotas</h3>
+    <p>O rate limit (100 req / 15 min) é global — aplica-se igualmente a <code>GET /carros</code> e <code>POST /login</code>. Rotas de autenticação deveriam ter um limite muito mais agressivo para evitar força bruta.</p>
+  </div>
+
+  <div class="bad-box">
+    <h3>5. Sem cálculo de valor da locação</h3>
+    <p>A tabela <code>locacoes</code> registra <code>data_inicio</code> e <code>data_fim</code>, mas nenhuma rota calcula o valor cobrado com base em <code>preco_diaria</code>. O campo existe no carro mas nunca é usado no fluxo de devolução.</p>
+  </div>
+
+  <div class="warn-box">
+    <h3>6. Arquivo arv.env no repositório</h3>
+    <p>O arquivo <code>arv.env</code> está rastreado pelo git e contém credenciais de banco. Mesmo que as senhas sejam de desenvolvimento, esse padrão é perigoso e não deve ir para produção.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag tag-future">Problemas futuros</span>
+  <h2>O que vai quebrar em escala</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Pool sem config explícita</h3>
+      <p style="font-size:13px">O pool usa o padrão do <code>pg</code> (max 10 conexões). Em produção com tráfego real, isso gera fila de espera e timeout.</p>
+    </div>
+    <div class="card">
+      <h3>Server único</h3>
+      <p style="font-size:13px">O <code>app.listen</code> é single-process. Node.js não usa múltiplos núcleos por padrão — o servidor vai saturar com carga alta.</p>
+    </div>
+    <div class="card">
+      <h3>Uploads locais</h3>
+      <p style="font-size:13px">Imagens salvas em <code>/uploads</code> no servidor. Em múltiplas instâncias ou containers, os arquivos desaparecem.</p>
+    </div>
+    <div class="card">
+      <h3>Sem paginação</h3>
+      <p style="font-size:13px"><code>SELECT * FROM carros</code> e <code>SELECT * FROM locacoes</code> sem LIMIT. Com milhares de registros, retorna tudo.</p>
+    </div>
+  </div>
+
+  <div class="warn-box" style="margin-top:1rem">
+    <h3>Lock pessimista em escala</h3>
+    <p>O <code>FOR UPDATE</code> resolve race condition mas em alta concorrência gera fila de espera no banco. Com muitos aluguéis simultâneos, a latência sobe porque cada transação bloqueia a linha até o COMMIT.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <span class="tag tag-future">Soluções</span>
+  <h2>O que fazer para resolver cada problema</h2>
+
+  <div class="step-list">
+    <div class="step"><div class="step-num">1</div><div class="step-body">
+      <h3>Token refresh</h3>
+      <p style="font-size:13px">Adicionar rota <code>POST /refresh</code> que aceita um refresh token de longa duração e retorna novo access token. Access token com expiração curta (15min), refresh com 7 dias.</p>
+    </div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body">
+      <h3>Validar CPF/CNH com biblioteca</h3>
+      <p style="font-size:13px">Usar <code>cpf-cnpj-validator</code> ou regex com verificação de dígitos. Adicionar constraint <code>UNIQUE</code> no banco para CPF.</p>
+    </div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body">
+      <h3>Rate limit por rota</h3>
+      <p style="font-size:13px">Rate limit de 5 tentativas / 15min para <code>/login</code> e <code>/registro</code>. Rate limit generoso para rotas de leitura. Usar <code>express-rate-limit</code> por rota em vez de global.</p>
+    </div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body">
+      <h3>Cluster mode / PM2</h3>
+      <p style="font-size:13px">Rodar <code>pm2 start server.js -i max</code> para usar todos os núcleos da CPU. Em container, usar <code>cluster</code> nativo do Node ou múltiplas réplicas atrás de load balancer.</p>
+    </div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body">
+      <h3>Uploads em S3 / object storage</h3>
+      <p style="font-size:13px">Substituir Multer local por Multer-S3 ou envio direto para AWS S3 / Cloudflare R2. URLs de imagem passam a ser persistentes e independentes do servidor.</p>
+    </div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body">
+      <h3>Paginação nas listagens</h3>
+      <p style="font-size:13px">Adicionar parâmetros <code>?page=1&limit=20</code> nas rotas de listagem. No banco: <code>LIMIT $1 OFFSET $2</code>. Resposta inclui <code>total</code> para o frontend paginar.</p>
+    </div></div>
+  </div>
+</div>
+
+</div>
