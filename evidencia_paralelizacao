@@ -1,0 +1,95 @@
+// teste_paralelismo.js
+//
+// EVIDÊNCIA DE PARALELISMO (sobreposição de operações de I/O):
+//
+// Diferente do teste anterior (mesmo carro -> disputa -> serialização
+// forçada pelo lock), aqui cada usuário aluga um carro DIFERENTE. Não há
+// disputa pelo mesmo recurso, então o lock de cada carro é independente.
+//
+// Se as requisições fossem processadas em SÉRIE (uma só depois da outra
+// terminar), o tempo total seria aproximadamente:
+//     N_CARROS * tempo_de_uma_transacao_completa
+//
+// Mas como o Node.js processa I/O de forma não bloqueante (event loop) e o
+// server.js usa um POOL de conexões (pool.connect()) que permite várias
+// transações em andamento ao mesmo tempo, o tempo total observado é muito
+// menor que a soma sequencial - isso é a evidência de que as operações
+// ocorrem em PARALELO (concorrentemente, intercaladas no tempo).
+
+import { MockDb } from "./mockDb.js";
+import { alugarCarro } from "./alugarHandler.js";
+
+const NUM_CARROS = 6;
+
+async function medirExecucaoParalela(db) {
+  const inicio = process.hrtime.bigint();
+
+  const tarefas = Array.from({ length: NUM_CARROS }, (_, i) =>
+    alugarCarro(db, { idCarro: i + 1, userId: i + 1, txId: `P${i + 1}` })
+  );
+
+  await Promise.all(tarefas);
+
+  const fim = process.hrtime.bigint();
+  return Number(fim - inicio) / 1e6;
+}
+
+async function medirExecucaoSequencial(db) {
+  const inicio = process.hrtime.bigint();
+
+  for (let i = 0; i < NUM_CARROS; i++) {
+    await alugarCarro(db, { idCarro: 100 + i, userId: i + 1, txId: `S${i + 1}` });
+  }
+
+  const fim = process.hrtime.bigint();
+  return Number(fim - inicio) / 1e6;
+}
+
+async function main() {
+  console.log("================================================");
+  console.log(` PARTE 1 - EXECUÇÃO EM PARALELO (Promise.all)`);
+  console.log(` ${NUM_CARROS} carros DIFERENTES, ${NUM_CARROS} usuários, disparo simultâneo`);
+  console.log("================================================\n");
+
+  const dbParalelo = new MockDb();
+  for (let i = 1; i <= NUM_CARROS; i++) {
+    dbParalelo.carros.set(i, { id: i, modelo: `Carro-${i}`, marca: "Generico", disponivel: true });
+  }
+
+  const tempoParalelo = await medirExecucaoParalela(dbParalelo);
+
+  console.log("\n================================================");
+  console.log(` PARTE 2 - EXECUÇÃO SEQUENCIAL (for...await, baseline)`);
+  console.log(` ${NUM_CARROS} carros DIFERENTES, processados um por vez`);
+  console.log("================================================\n");
+
+  const dbSequencial = new MockDb();
+  for (let i = 100; i < 100 + NUM_CARROS; i++) {
+    dbSequencial.carros.set(i, { id: i, modelo: `Carro-${i}`, marca: "Generico", disponivel: true });
+  }
+
+  const tempoSequencial = await medirExecucaoSequencial(dbSequencial);
+
+  console.log("\n================================================");
+  console.log(" COMPARATIVO FINAL");
+  console.log("================================================");
+  console.log(`Tempo em paralelo (Promise.all):      ${tempoParalelo.toFixed(2)} ms`);
+  console.log(`Tempo sequencial (for...await):       ${tempoSequencial.toFixed(2)} ms`);
+  console.log(`Razão sequencial / paralelo:          ${(tempoSequencial / tempoParalelo).toFixed(2)}x`);
+
+  console.log("\n================================================");
+  console.log(" CONCLUSÃO");
+  console.log("================================================");
+  if (tempoParalelo < tempoSequencial * 0.6) {
+    console.log("✅ EVIDÊNCIA DE PARALELISMO CONFIRMADA:");
+    console.log("   O tempo de execução concorrente foi significativamente menor");
+    console.log("   que a soma sequencial das mesmas operações, mostrando que as");
+    console.log("   transações independentes têm seu I/O sobreposto no tempo");
+    console.log("   (event loop do Node.js processando múltiplas operações");
+    console.log("   pendentes simultaneamente, análogo ao pool de conexões do pg).");
+  } else {
+    console.log("⚠️  Diferença não significativa - revisar parâmetros do teste.");
+  }
+}
+
+main();
