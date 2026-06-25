@@ -1,0 +1,78 @@
+// teste_concorrencia.js
+//
+// EVIDÊNCIA DE CONCORRÊNCIA:
+//   N "usuários" (tarefas assíncronas) disparam, ao mesmo tempo, uma
+//   requisição para alugar o MESMO carro (id = 1). Sem controle de
+//   concorrência, seria possível que 2+ usuários "vencessem" a corrida e
+//   o carro fosse alugado duas vezes (condição de corrida / race condition).
+//   O server.js usa SELECT ... FOR UPDATE dentro de uma transação para
+//   impedir isso. Este script prova, na prática, que apenas 1 das N
+//   tentativas é bem-sucedida e as demais recebem "Carro indisponível.".
+//
+// EVIDÊNCIA DE PARALELISMO (concorrência de I/O / event loop):
+//   As N chamadas são disparadas TODAS ao mesmo tempo via Promise.all.
+//   O log mostra que múltiplas transações ficam "em andamento" ao mesmo
+//   tempo (intercaladas no tempo, aguardando I/O simulado), e não em
+//   sequência estrita uma após a outra - isto é o paralelismo de I/O
+//   característico do event loop do Node.js / do pool de conexões do pg.
+
+import { MockDb } from "./mockDb.js";
+import { alugarCarro } from "./alugarHandler.js";
+
+const NUM_USUARIOS = 8;
+const ID_CARRO = 1;
+
+async function main() {
+  const db = new MockDb();
+
+  console.log("================================================");
+  console.log(` Estado inicial do carro ${ID_CARRO}:`, db.carros.get(ID_CARRO));
+  console.log(` ${NUM_USUARIOS} usuários vão tentar alugar o MESMO carro ao mesmo tempo`);
+  console.log("================================================\n");
+
+  const inicio = process.hrtime.bigint();
+
+  // Disparo simultâneo: todas as Promises começam a executar AGORA,
+  // não em sequência - é isto que caracteriza a concorrência das requisições.
+  const tarefas = Array.from({ length: NUM_USUARIOS }, (_, i) =>
+    alugarCarro(db, { idCarro: ID_CARRO, userId: i + 1, txId: i + 1 })
+  );
+
+  const resultados = await Promise.all(tarefas);
+
+  const fim = process.hrtime.bigint();
+  const duracaoMs = Number(fim - inicio) / 1e6;
+
+  console.log("\n================================================");
+  console.log(" RESULTADOS POR USUÁRIO");
+  console.log("================================================");
+  resultados.forEach((r, i) => {
+    console.log(`Usuário ${i + 1}: ${r.sucesso ? "✅ SUCESSO" : "❌ FALHA"} - ${r.mensagem}`);
+  });
+
+  const sucessos = resultados.filter((r) => r.sucesso).length;
+  const falhas = resultados.filter((r) => !r.sucesso).length;
+
+  console.log("\n================================================");
+  console.log(" ANÁLISE");
+  console.log("================================================");
+  console.log(`Tempo total de execução: ${duracaoMs.toFixed(2)} ms`);
+  console.log(`Locações criadas:        ${db.locacoes.length}`);
+  console.log(`Sucessos:                ${sucessos}`);
+  console.log(`Falhas (carro ocupado):  ${falhas}`);
+  console.log(`Estado final do carro:   `, db.carros.get(ID_CARRO));
+
+  console.log("\n================================================");
+  console.log(" VERIFICAÇÃO DE CONSISTÊNCIA (invariante de exclusão mútua)");
+  console.log("================================================");
+  if (sucessos === 1 && db.locacoes.length === 1) {
+    console.log("✅ APROVADO: exatamente 1 locação foi criada, mesmo com");
+    console.log(`   ${NUM_USUARIOS} requisições concorrentes disputando o mesmo recurso.`);
+    console.log("   O lock (SELECT ... FOR UPDATE) garantiu exclusão mútua.");
+  } else {
+    console.log("❌ FALHA DE CONSISTÊNCIA: condição de corrida detectada!");
+    console.log(`   ${sucessos} sucessos e ${db.locacoes.length} locações para 1 carro.`);
+  }
+}
+
+main();
