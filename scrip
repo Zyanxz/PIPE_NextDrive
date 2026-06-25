@@ -1,0 +1,203 @@
+Hoje iremos apresentar o Sistema de Locação de Veículos desenvolvido pelo nosso grupo.
+Durante o desenvolvimento do projeto, buscamos não apenas criar uma aplicação funcional, mas também aplicar conceitos fundamentais da área de desenvolvimento de software, como arquitetura em camadas, banco de dados relacionais, autenticação segura, APIs REST, concorrência e paralelismo.
+
+Ao longo da apresentação mostraremos como essas tecnologias se integram para criar uma solução segura, organizada, escalável e preparada para atender múltiplos usuários simultaneamente.
+
+Além da implementação prática, nosso foco foi compreender como sistemas modernos funcionam internamente e quais decisões arquiteturais impactam diretamente desempenho, segurança e manutenção."
+
+SLIDE 2 – PROBLEMA E MOTIVAÇÃO
+"Antes de desenvolver qualquer sistema, é fundamental compreender qual problema ele resolve.
+Uma locadora de veículos precisa gerenciar diariamente uma grande quantidade de informações.
+
+É necessário controlar clientes, veículos disponíveis, locações em andamento, devoluções, histórico de operações e disponibilidade dos automóveis.
+
+Quando esse processo é realizado manualmente ou utilizando sistemas fragmentados, surgem diversos problemas.
+
+Os dados ficam espalhados em diferentes locais, aumenta a chance de erros humanos, o controle se torna mais lento e a tomada de decisões fica prejudicada.
+
+Nosso sistema foi desenvolvido justamente para centralizar essas informações em uma única plataforma.
+
+Dessa forma, todas as operações passam a ocorrer de maneira organizada, rastreável e segura."
+
+SLIDE 3 – VISÃO GERAL DA SOLUÇÃO
+"O sistema foi desenvolvido utilizando uma arquitetura cliente-servidor.
+Nessa arquitetura existe uma clara separação entre interface, regras de negócio e armazenamento dos dados.
+
+O usuário interage com a interface da aplicação.
+
+Essa interface envia requisições para a API desenvolvida em Node.js.
+
+A API é responsável por processar as regras de negócio, validar informações e realizar operações no banco PostgreSQL.
+
+Essa separação traz diversas vantagens.
+
+Primeiramente, facilita a manutenção do sistema.
+
+Além disso, permite que cada camada evolua de forma independente.
+
+Se futuramente quisermos trocar a interface por um aplicativo mobile, por exemplo, o backend continuará funcionando sem alterações significativas.
+
+Esse modelo é amplamente utilizado em aplicações corporativas justamente por favorecer escalabilidade e organização."
+
+SLIDE 4 – TECNOLOGIAS UTILIZADAS
+"Para o backend utilizamos Node.js juntamente com o framework Express.
+O Node.js foi escolhido por seu excelente desempenho em aplicações que lidam com grande volume de requisições simultâneas.
+
+Diferentemente de muitos ambientes tradicionais, o Node trabalha com um modelo orientado a eventos e operações assíncronas.
+
+Além disso, utilizamos PostgreSQL como banco de dados.
+
+O PostgreSQL é um dos bancos relacionais mais utilizados no mercado devido à sua robustez, confiabilidade e suporte a transações complexas.
+
+Também implementamos mecanismos de segurança através do JWT para autenticação e do bcrypt para armazenamento seguro de senhas.
+
+Ferramentas como Zod, Multer e Rate Limiter complementam a solução fornecendo validação, upload de arquivos e proteção contra excesso de requisições."
+
+SLIDE 5 – MODELAGEM DOS DADOS
+"A modelagem do banco de dados foi uma etapa fundamental.
+Optamos por utilizar um banco relacional porque os dados possuem forte relacionamento entre si.
+
+Um cliente pode realizar diversas locações.
+
+Um veículo pode participar de várias operações ao longo do tempo.
+
+Esses relacionamentos precisam ser armazenados de forma consistente.
+
+O PostgreSQL garante essa consistência através das propriedades ACID.
+
+A atomicidade garante que uma transação seja executada completamente ou cancelada integralmente em caso de falha.
+
+A consistência garante que o banco nunca fique em um estado inválido.
+
+O isolamento impede que transações simultâneas interfiram umas nas outras.
+
+E a durabilidade assegura que os dados persistam mesmo após falhas inesperadas.
+
+Esses princípios são essenciais quando diversos usuários utilizam o sistema simultaneamente."
+
+SLIDE 6 – SEGURANÇA DA APLICAÇÃO
+"Segurança foi uma preocupação presente desde o início do projeto.
+Quando um usuário cria uma conta, sua senha não é armazenada diretamente no banco.
+
+Antes disso, ela passa pelo bcrypt.
+
+O bcrypt gera um hash criptográfico que não pode ser revertido para a senha original.
+
+Isso significa que mesmo que alguém obtenha acesso ao banco de dados, não conseguirá visualizar as senhas reais dos usuários.
+
+Além disso, utilizamos JWT para autenticação.
+
+Após realizar login, o usuário recebe um token digital.
+
+Esse token acompanha as próximas requisições e permite que o servidor identifique quem está realizando cada operação.
+
+Essa abordagem reduz consumo de recursos e facilita a escalabilidade da aplicação."
+
+SLIDE 7 – INTRODUÇÃO À CONCORRÊNCIA
+"Agora chegamos ao principal ponto técnico do projeto.
+Quando pensamos em aplicações reais, precisamos considerar que vários usuários utilizam o sistema simultaneamente.
+
+Imagine três usuários acessando o sistema no mesmo instante.
+
+Um realiza login.
+
+Outro consulta os veículos disponíveis.
+
+E um terceiro registra uma nova locação.
+
+O sistema precisa lidar com todas essas operações sem travar ou obrigar um usuário a esperar pelo outro.
+
+É justamente aqui que entra o conceito de concorrência.
+
+Concorrência não significa executar tudo exatamente ao mesmo tempo.
+
+Significa administrar múltiplas tarefas de forma eficiente, permitindo que todas avancem sem bloquear o sistema.
+
+Esse conceito é fundamental para aplicações web modernas."
+
+SLIDE 8 – COMO O NODE.JS IMPLEMENTA CONCORRÊNCIA
+"O Node.js implementa concorrência através de um mecanismo chamado Event Loop.
+Esse mecanismo é considerado uma das principais características da plataforma.
+
+Em muitas tecnologias tradicionais, uma operação de banco de dados pode bloquear a execução até que a resposta seja recebida.
+
+No Node.js isso não acontece.
+
+Quando uma consulta SQL é enviada ao banco, a thread principal não fica parada aguardando.
+
+Ela continua livre para processar novas requisições.
+
+Quando a resposta retorna, o Event Loop identifica que a operação foi concluída e executa a ação correspondente.
+
+Isso permite atender um grande número de usuários simultaneamente utilizando poucos recursos computacionais.
+
+Esse modelo é especialmente eficiente para aplicações que realizam muitas operações de entrada e saída, como consultas ao banco de dados."
+
+SLIDE 9 – DIFERENÇA ENTRE CONCORRÊNCIA E PARALELISMO
+"Embora sejam conceitos relacionados, concorrência e paralelismo não são a mesma coisa.
+A concorrência está relacionada ao gerenciamento eficiente das tarefas.
+
+Já o paralelismo está relacionado à execução física simultânea dessas tarefas.
+
+Uma analogia simples é imaginar um garçom atendendo diversas mesas.
+
+Se ele alterna rapidamente entre várias mesas, temos concorrência.
+
+Se vários garçons atendem várias mesas ao mesmo tempo, temos paralelismo.
+
+No nosso sistema, o Node.js é responsável principalmente pela concorrência.
+
+Já o paralelismo ocorre em níveis mais baixos da infraestrutura."
+
+SLIDE 10 – PARALELISMO NO SISTEMA
+"O paralelismo acontece principalmente através do hardware e dos serviços utilizados pela aplicação.
+O PostgreSQL é capaz de executar múltiplas operações simultaneamente.
+
+O sistema operacional distribui processos entre diferentes núcleos do processador.
+
+Além disso, bibliotecas internas do Node.js utilizam pools de threads para determinadas operações.
+
+Dessa forma, embora o JavaScript execute em uma thread principal, a aplicação como um todo se beneficia do paralelismo oferecido pela infraestrutura.
+
+Essa combinação entre concorrência e paralelismo é responsável pela capacidade de atender vários usuários simultaneamente mantendo boa performance."
+
+SLIDE 11 – ESCALABILIDADE
+"Outro aspecto importante é a escalabilidade.
+Um sistema não deve ser projetado apenas para funcionar hoje.
+
+Ele deve estar preparado para crescer.
+
+Caso a quantidade de usuários aumente significativamente, existem diversas estratégias que podem ser adotadas.
+
+Podemos otimizar consultas SQL.
+
+Podemos aumentar recursos de hardware.
+
+Podemos distribuir a carga entre múltiplas instâncias da aplicação utilizando balanceadores de carga.
+
+Também podemos utilizar cache para reduzir acessos desnecessários ao banco.
+
+A arquitetura escolhida facilita essa evolução porque mantém responsabilidades bem separadas."
+
+SLIDE 12 – RESULTADOS E APRENDIZADOS
+"Durante o desenvolvimento do projeto conseguimos aplicar diversos conceitos vistos ao longo do curso.
+Trabalhamos com modelagem de dados, desenvolvimento de APIs, autenticação, segurança, concorrência, paralelismo e arquitetura de software.
+
+Além de desenvolver uma aplicação funcional, compreendemos como sistemas modernos são construídos e como decisões arquiteturais influenciam diretamente desempenho, manutenção e escalabilidade.
+
+Esse conhecimento é especialmente importante porque os mesmos conceitos são utilizados diariamente em sistemas corporativos reais."
+
+SLIDE 13 – CONCLUSÃO
+"Concluindo, o Sistema de Locação de Veículos permitiu integrar conhecimentos de diversas áreas da computação em uma única solução.
+A utilização de Node.js, PostgreSQL e mecanismos modernos de autenticação possibilitou criar uma aplicação segura, organizada e escalável.
+
+Além disso, a análise dos conceitos de concorrência e paralelismo mostrou como aplicações modernas conseguem atender múltiplos usuários simultaneamente mantendo desempenho e estabilidade.
+
+Mais do que construir um sistema funcional, o projeto nos permitiu compreender profundamente os mecanismos que fazem uma aplicação funcionar em um ambiente real de produção.
+
+Muito obrigado pela atenção."
+
+Dica de ouro para a banca
+Quando falar de concorrência e paralelismo, use esta frase exatamente:
+"É importante destacar que concorrência não significa necessariamente execução simultânea. Concorrência é a capacidade de administrar múltiplas tarefas sem bloqueio, enquanto paralelismo é a execução física simultânea dessas tarefas utilizando múltiplos núcleos de processamento. Nosso sistema utiliza ambos os conceitos em níveis diferentes da arquitetura."
+Essa frase sozinha costuma responder metade das perguntas que os professores fazem sobre o tema.
