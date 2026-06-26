@@ -66,7 +66,14 @@ form?.addEventListener("submit", async (event) => {
       body: formData
     });
 
-    const data = await resposta.json();
+    const texto = await resposta.text();
+    let data;
+
+    try {
+      data = texto ? JSON.parse(texto) : {};
+    } catch (jsonError) {
+      throw new Error(`Resposta inválida do servidor: ${texto}`);
+    }
 
     if (!resposta.ok) {
       throw new Error(data.mensagem || "Erro ao cadastrar carro.");
@@ -115,12 +122,16 @@ async function carregarCarros() {
     for (const carro of data.carros) {
       const item = document.createElement("div");
       item.className = "carro-card";
+      const statusLabel = carro.status
+        ? carro.status.charAt(0).toUpperCase() + carro.status.slice(1).toLowerCase()
+        : "Indisponível";
+
       item.innerHTML = `
         ${carro.imagem ? `<img src="${NextDrive.API_URL}${carro.imagem}" alt="${carro.modelo}" class="carro-thumb">` : ""}
         <h3>${carro.modelo} (${carro.marca})</h3>
         <p>Ano: ${carro.ano}</p>
         <p>Diária: R$ ${Number(carro.preco_diaria).toFixed(2)}</p>
-        <p>${carro.disponivel ? "Disponível" : "Indisponível"}</p>
+        <p>Status: ${statusLabel}</p>
       `;
       lista.appendChild(item);
     }

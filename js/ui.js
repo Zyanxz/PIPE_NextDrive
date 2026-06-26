@@ -9,7 +9,7 @@
     localStorage.setItem(THEME_KEY, theme);
     const toggle = document.getElementById("btnToggleTheme");
     if (toggle) {
-      toggle.textContent = dark ? "Light" : "Dark";
+      toggle.textContent = dark ? "☀️ Claro" : "🌙 Escuro";
     }
   }
 
@@ -107,11 +107,16 @@
       ...options.headers
     };
 
-    const response = await fetch(`${API_URL}${path}`, {
-      ...options,
-      headers,
-      body: options.body ? JSON.stringify(options.body) : undefined
-    });
+    let response;
+    try {
+      response = await fetch(`${API_URL}${path}`, {
+        ...options,
+        headers,
+        body: options.body ? JSON.stringify(options.body) : undefined
+      });
+    } catch (err) {
+      throw new Error(`Falha ao conectar ao servidor (${err.message}). Verifique se o backend está rodando em ${API_URL}`);
+    }
 
     const data = await response.json().catch(() => ({}));
 
@@ -130,36 +135,67 @@
   }
 
   function createCarCard(carro, options = {}) {
-  const card = document.createElement("div");
-  const dailyPrice = carro.preco_diaria ?? carro.preco ?? 0;
+    const card = document.createElement("div");
+    const dailyPrice = carro.preco_diaria ?? carro.preco ?? 0;
 
-  const imagemUrl =
-    carro.imagem
-      ? `${API_URL}${carro.imagem}`
-      : "";
+    const imagemUrl = carro.imagem ? `${API_URL}${carro.imagem}` : "";
 
-  card.className = "carro-card";
+    card.className = "carro-card";
 
-  card.innerHTML = `
-    ${
-      carro.imagem
-        ? `<img
-             src="${imagemUrl}"
-             alt="${carro.modelo}"
-             class="carro-thumb"
-           >`
-        : ""
+    const statusLabel = options.status
+      ? options.status
+      : carro.status
+      ? `${carro.status.charAt(0).toUpperCase() + carro.status.slice(1).toLowerCase()}`
+      : "indisponível";
+
+    // derive a small status class for styling
+    const s = (statusLabel || "").toLowerCase();
+    let statusClass = "";
+    if (s.includes("ativo") || s.includes("dispon")) statusClass = "active";
+    else if (s.includes("finaliz") || s.includes("final")) statusClass = "finalized";
+    else if (s.includes("indispon") || s.includes("alug")) statusClass = "busy";
+
+    card.innerHTML = `
+      ${
+        carro.imagem
+          ? `<div class="carro-image"><img src="${imagemUrl}" alt="${carro.modelo}" class="carro-thumb"></div>`
+          : ""
+      }
+
+      <div class="carro-info">
+        <div class="carro-header">
+          <h3>${carro.modelo}</h3>
+          ${statusLabel ? `<span class="status-pill ${statusClass}">${statusLabel}</span>` : ""}
+        </div>
+        <div class="carro-details">
+          <p class="carro-meta">${carro.marca}${carro.ano ? ` • ${carro.ano}` : ""}</p>
+          ${carro.km ? `<p><strong>KM:</strong> ${Number(carro.km).toLocaleString("pt-BR")} km</p>` : ""}
+        </div>
+        <div class="carro-footer">
+          <p class="preco">${formatCurrency(dailyPrice)}/dia</p>
+        </div>
+      </div>
+    `;
+
+    if (statusClass) card.classList.add(statusClass);
+
+    if (options.buttonText) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = options.buttonDisabled ? "btn-outline btn-disabled" : "btn-primary";
+      button.textContent = options.buttonText;
+      button.disabled = Boolean(options.buttonDisabled);
+
+      if (typeof options.onClick === "function") {
+        button.addEventListener("click", options.onClick);
+      }
+
+      card.appendChild(button);
     }
 
-    <h3>${carro.modelo}</h3>
-    <p>${carro.marca}</p>
-    ${carro.ano ? `<p>${carro.ano}</p>` : ""}
-    <p class="preco">${formatCurrency(dailyPrice)}/dia</p>
-    ${options.status ? `<p class="status-text">${options.status}</p>` : ""}
-  `;
-
-  return card;
+    return card;
   }
+
   function enhanceButtons() {
     document.querySelectorAll("button").forEach((button) => {
       if (button.dataset.enhanced) {
@@ -172,6 +208,65 @@
       const reset = () => button.classList.remove("pressed");
       button.addEventListener("pointerup", reset);
       button.addEventListener("pointerleave", reset);
+    });
+  }
+
+  // Confirmation modal helper — returns a Promise<boolean>
+  function showConfirm(message, title = "Confirmação") {
+    return new Promise((resolve) => {
+      // build overlay
+      const overlay = document.createElement("div");
+      overlay.className = "modal-overlay";
+
+      const modal = document.createElement("div");
+      modal.className = "confirm-modal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+
+      modal.innerHTML = `
+        <div class="modal-body">
+          <div style="flex:1">
+            <h3>${title}</h3>
+            <p>${message}</p>
+          </div>
+        </div>
+        <div class="confirm-actions">
+          <button class="btn-cancel">Cancelar</button>
+          <button class="btn-confirm">Confirmar</button>
+        </div>
+      `;
+
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+
+      // small show animation
+      requestAnimationFrame(() => overlay.classList.add("show"));
+
+      const btnCancel = modal.querySelector(".btn-cancel");
+      const btnConfirm = modal.querySelector(".btn-confirm");
+
+      const cleanup = (result) => {
+        overlay.classList.remove("show");
+        overlay.addEventListener(
+          "transitionend",
+          () => overlay.remove(),
+          { once: true }
+        );
+        document.removeEventListener("keydown", onKey);
+        resolve(result);
+      };
+
+      function onKey(e) {
+        if (e.key === "Escape") cleanup(false);
+        if (e.key === "Enter") cleanup(true);
+      }
+
+      btnCancel.addEventListener("click", () => cleanup(false));
+      btnConfirm.addEventListener("click", () => cleanup(true));
+      document.addEventListener("keydown", onKey);
+
+      // focus
+      btnConfirm.focus();
     });
   }
 
@@ -191,6 +286,7 @@
     API_URL,
     clearStoredUser,
     createCarCard,
+    showConfirm,
     getStoredUser,
     getToken,
     request,

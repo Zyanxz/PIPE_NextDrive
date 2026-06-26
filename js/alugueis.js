@@ -36,18 +36,47 @@ async function carregarLocacoes() {
 
 function criarCardLocacao(locacao) {
   const card = document.createElement("div");
-  const dataInicio = new Date(locacao.data_inicio).toLocaleString("pt-BR");
+  const dataInicio = new Date(locacao.data_inicio).toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
   const dataFim = locacao.data_fim
-    ? new Date(locacao.data_fim).toLocaleString("pt-BR")
+    ? new Date(locacao.data_fim).toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      })
     : null;
 
-  card.className = "carro-card";
+  const imagemUrl = locacao.imagem ? `${NextDrive.API_URL}${locacao.imagem}` : "";
+  const statusLabel = locacao.data_fim ? "Finalizado" : "Ativo";
+
+  // set status class for visual distinction
+  const statusClass = locacao.data_fim ? "finalized" : "active";
+
+  card.className = `carro-card ${statusClass}`;
   card.innerHTML = `
-    <h3>${locacao.modelo}</h3>
-    <p><strong>Marca:</strong> ${locacao.marca}</p>
-    <p><strong>Início:</strong> ${dataInicio}</p>
-    ${dataFim ? `<p><strong>Fim:</strong> ${dataFim}</p>` : ""}
-    <p><strong>Status:</strong> ${locacao.data_fim ? "Finalizado" : "Ativo"}</p>
+    ${imagemUrl ? `<div class="carro-image"><img src="${imagemUrl}" alt="${locacao.modelo}" class="carro-thumb"></div>` : ""}
+    <div class="carro-info">
+      <div class="carro-header">
+        <h3>${locacao.modelo}</h3>
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="carro-details">
+        <p class="carro-meta">${locacao.marca}${locacao.ano ? ` • ${locacao.ano}` : ""}</p>
+        ${locacao.placa ? `<p><strong>Placa:</strong> ${locacao.placa}</p>` : ""}
+        <p><strong>Início:</strong> ${dataInicio}</p>
+        ${dataFim ? `<p><strong>Fim:</strong> ${dataFim}</p>` : "<p><strong>Fim:</strong> Em andamento</p>"}
+      </div>
+      <div class="carro-footer">
+        <p class="preco">${locacao.preco_diaria ? Number(locacao.preco_diaria).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : ""}/dia</p>
+      </div>
+    </div>
   `;
 
   if (!locacao.data_fim) {
@@ -63,9 +92,8 @@ function criarCardLocacao(locacao) {
 }
 
 async function devolverCarro(idLocacao) {
-  if (!confirm("Deseja realmente devolver este veículo?")) {
-    return;
-  }
+  const ok = await NextDrive.showConfirm("Deseja realmente devolver este veículo?", "Devolver veículo");
+  if (!ok) return;
 
   try {
     const data = await NextDrive.request("/devolver", {

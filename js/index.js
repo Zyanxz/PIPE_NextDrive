@@ -19,14 +19,24 @@ btnSair?.addEventListener("click", () => {
   window.location.href = "login.html";
 });
 
+const btnVerCarros = document.querySelector(".hero-buttons .btn-primary");
+const btnSaibaMais = document.querySelector(".hero-buttons .btn-outline");
+
+btnVerCarros?.addEventListener("click", () => {
+  const carrosSection = document.getElementById("listaCarros");
+  carrosSection?.scrollIntoView({ behavior: "smooth" });
+});
+
+btnSaibaMais?.addEventListener("click", () => {
+  const statsSection = document.querySelector(".stats");
+  statsSection?.scrollIntoView({ behavior: "smooth" });
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
   atualizarHeader();
   configurarPainelDev();
 
-  await Promise.all([
-    carregarCarrosDisponiveis(),
-    carregarCarrosAlugados()
-  ]);
+  await carregarDashboard();
 });
 
 function atualizarHeader() {
@@ -104,9 +114,7 @@ async function carregarCarrosAlugados() {
 
     data.carros.forEach((carro) => {
       listaAlugados.appendChild(
-        NextDrive.createCarCard(carro, {
-          status: "Status: Alugado"
-        })
+        NextDrive.createCarCard(carro)
       );
     });
   } catch (error) {
@@ -126,11 +134,15 @@ async function alugarCarro(idCarro) {
 
     NextDrive.showMessage(null, data.mensagem || "Carro alugado com sucesso!", "sucesso");
 
-    await Promise.all([
-      carregarCarrosDisponiveis(),
-      carregarCarrosAlugados()
-    ]);
+    await carregarDashboard();
   } catch (error) {
     NextDrive.showMessage(null, error.message || "Erro ao alugar o carro.", "erro");
   }
+}
+
+async function carregarDashboard() {
+  await Promise.all([
+    carregarCarrosDisponiveis(),
+    carregarCarrosAlugados()
+  ]);
 }
