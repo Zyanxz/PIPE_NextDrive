@@ -21,6 +21,7 @@
       <a href="alugueis.html">Meus Aluguéis</a>
       <a href="perfil.html">Meu Perfil</a>
     </nav>
+    <button id="btnToggleTheme" class="btn-outline sidebar-theme-toggle" type="button">🌙 Escuro</button>
   </div>
 
   <div id="sidebarOverlay" class="sidebar-overlay"></div>
@@ -28,16 +29,16 @@
   <header class="topo">
     <button id="btnMenu" class="menu-btn" type="button" aria-label="Abrir menu">Menu</button>
     <h1>Meus Aluguéis</h1>
-    <div class="nav-actions">
-      <button id="btnToggleTheme" class="btn-outline" type="button">Dark</button>
-    </div>
   </header>
 
   <main>
-    <section class="section-heading">
-      <h2>Veículos alugados</h2>
+    <section class="secao">
+      <div class="titulo-secao">
+        <h2>Minhas Reservas</h2>
+        <span>Confira seus veículos alugados e devolva com apenas um clique.</span>
+      </div>
+      <div id="listaAlugueis" class="carros-container"></div>
     </section>
-    <div id="listaAlugueis" class="carros-container"></div>
   </main>
 
   <script src="js/sidebar.js"></script>

@@ -10,44 +10,45 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="tela-login">
-  <div id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <h2>NextDrive</h2>
-      <button id="btnFecharSidebar" class="close-btn" type="button" aria-label="Fechar menu">x</button>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="index.html">Início</a>
-      <a href="alugueis.html">Meus Aluguéis</a>
-      <a href="perfil.html">Meu Perfil</a>
-    </nav>
-  </div>
-
-  <div id="sidebarOverlay" class="sidebar-overlay"></div>
-
   <header class="topo">
-    <button id="btnMenu" class="menu-btn" type="button" aria-label="Abrir menu">Menu</button>
     <h1>NextDrive | Login</h1>
-    <div class="nav-actions">
-      <button id="btnToggleTheme" class="btn-outline" type="button">Dark</button>
-    </div>
+    <button id="btnToggleTheme" class="btn-outline btn-theme-toggle" type="button">🌙 Escuro</button>
   </header>
 
-  <main class="form-container">
-    <form id="formLogin" class="form-box">
-      <h1>Bem-vindo de volta!</h1>
-      <p>Entre para continuar sua jornada na NextDrive.</p>
+  <main class="form-container auth-layout">
+    <section class="auth-card">
+      <div class="auth-side">
+        <div class="auth-brand">
+          <span>NextDrive</span>
+          <small>Seu app de locação de veículos.</small>
+        </div>
+        <h2>Bem-vindo de volta!</h2>
+        <p>Entre para continuar sua jornada na NextDrive com maior praticidade.</p>
+        <div class="auth-metrics">
+          <div><strong>250+</strong><span>Clientes</span></div>
+          <div><strong>14.000+</strong><span>Reservas</span></div>
+        </div>
+      </div>
 
-      <input type="email" name="email" placeholder="E-mail" required>
-      <input type="password" name="senha" placeholder="Senha" required>
-      <button type="submit" class="btn-principal">Entrar</button>
+      <form id="formLogin" class="form-box auth-form">
+        <div class="auth-header">
+          <span class="auth-badge">Login</span>
+          <h1>Faça seu login</h1>
+          <p>Use seu e-mail e senha para acessar o painel.</p>
+        </div>
 
-      <p class="link-troca">Ainda não tem conta? <a href="registro.html">Crie uma agora</a></p>
-      <p id="mensagem" class="mensagem"></p>
-    </form>
+        <div class="input-group">
+          <input type="email" name="email" placeholder="E-mail" required>
+          <input type="password" name="senha" placeholder="Senha" required>
+        </div>
+
+        <button type="submit" class="btn-principal">Entrar</button>
+        <p class="link-troca">Ainda não tem conta? <a href="registro.html">Crie uma agora</a></p>
+        <p id="mensagem" class="mensagem"></p>
+      </form>
+    </section>
   </main>
 
-  <script src="js/sidebar.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/login.js"></script>
 </body>

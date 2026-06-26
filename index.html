@@ -23,6 +23,7 @@
       <a href="alugueis.html">Minhas Reservas</a>
       <a href="perfil.html">Meu Perfil</a>
     </nav>
+    <button id="btnToggleTheme" class="btn-outline sidebar-theme-toggle" type="button">🌙 Escuro</button>
   </div>
 
   <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
@@ -41,12 +42,11 @@
       <span id="usuarioNome"></span>
       <button id="btnLogin" class="btn-outline" type="button">Entrar</button>
       <button id="btnRegistro" class="btn-primary" type="button">Criar Conta</button>
-      <button id="btnToggleTheme" class="btn-outline" type="button">Dark</button>
       <button id="btnSair" class="btn-outline" type="button" style="display:none;">Sair</button>
       <button id="btnPainelDev" class="btn-dev" type="button" style="display:none;">Painel Administrativo</button>
     </nav>
 
-    <button id="btnMenu" class="menu-btn" type="button" aria-label="Abrir menu">?</button>
+    <button id="btnMenu" class="menu-btn" type="button" aria-label="Abrir menu">≡</button>
   </header>
 
   <!-- HERO -->
@@ -90,15 +90,15 @@
     <section class="secao">
       <div class="titulo-secao">
         <h2>Veículos Disponíveis</h2>
-        <span>Escolha o modelo ideal para sua necessidade.</span>
+        <span>Escolha o modelo ideal para sua próxima viagem ou compromisso.</span>
       </div>
       <div class="carros-container" id="listaCarros"></div>
     </section>
 
     <section class="secao">
       <div class="titulo-secao">
-        <h2>Carros em Uso</h2>
-        <span>Veículos reservados e em trânsito.</span>
+        <h2>Reservas em andamento</h2>
+        <span>Veja os veículos já reservados e acompanhe o status.</span>
       </div>
       <div class="carros-container" id="listaAlugados"></div>
     </section>

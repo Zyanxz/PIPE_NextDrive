@@ -10,49 +10,49 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="tela-registro">
-  <div id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <h2>NextDrive</h2>
-      <button id="btnFecharSidebar" class="close-btn" type="button" aria-label="Fechar menu">x</button>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="index.html">Início</a>
-      <a href="alugueis.html">Meus Aluguéis</a>
-      <a href="perfil.html">Meu Perfil</a>
-    </nav>
-  </div>
-
-  <div id="sidebarOverlay" class="sidebar-overlay"></div>
-
   <header class="topo">
-    <button id="btnMenu" class="menu-btn" type="button" aria-label="Abrir menu">Menu</button>
     <h1>NextDrive | Registro</h1>
-    <div class="nav-actions">
-      <button id="btnToggleTheme" class="btn-outline" type="button">Dark</button>
-    </div>
+    <button id="btnToggleTheme" class="btn-outline btn-theme-toggle" type="button">🌙 Escuro</button>
   </header>
 
-  <main class="form-container">
-    <form id="formRegistro" class="form-box">
-      <h1>Crie sua conta</h1>
-      <p>Preencha as informações abaixo para começar.</p>
+  <main class="form-container auth-layout">
+    <section class="auth-card">
+      <div class="auth-side">
+        <div class="auth-brand">
+          <span>NextDrive</span>
+          <small>O aluguel de carros mais moderno.</small>
+        </div>
+        <h2>Comece agora</h2>
+        <p>Crie sua conta e tenha acesso rápido aos melhores veículos e reservas.</p>
+        <div class="auth-metrics">
+          <div><strong>120+</strong><span>Carros</span></div>
+          <div><strong>99%</strong><span>Satisfação</span></div>
+        </div>
+      </div>
 
-      <input type="text" name="nome" placeholder="Nome completo" required>
-      <input type="text" name="cpf" placeholder="CPF" required>
-      <input type="text" name="cnh" placeholder="CNH" required>
-      <input type="tel" name="tel" placeholder="Telefone (opcional)">
-      <input type="email" name="email" placeholder="E-mail" required>
-      <input type="password" name="senha" placeholder="Senha" required>
+      <form id="formRegistro" class="form-box auth-form">
+        <div class="auth-header">
+          <span class="auth-badge">Registro</span>
+          <h1>Crie sua conta</h1>
+          <p>Preencha os dados abaixo para começar a usar a NextDrive.</p>
+        </div>
 
-      <button type="submit" class="btn-principal">Registrar</button>
+        <div class="input-group">
+          <input type="text" name="nome" placeholder="Nome completo" required>
+          <input type="text" name="cpf" placeholder="CPF" required>
+          <input type="text" name="cnh" placeholder="CNH" required>
+          <input type="tel" name="tel" placeholder="Telefone (opcional)">
+          <input type="email" name="email" placeholder="E-mail" required>
+          <input type="password" name="senha" placeholder="Senha" required>
+        </div>
 
-      <p class="link-troca">Já possui conta? <a href="login.html">Faça login</a></p>
-      <div id="mensagem" class="mensagem"></div>
-    </form>
+        <button type="submit" class="btn-principal">Registrar</button>
+        <p class="link-troca">Já possui conta? <a href="login.html">Faça login</a></p>
+        <div id="mensagem" class="mensagem"></div>
+      </form>
+    </section>
   </main>
 
-  <script src="js/sidebar.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/cadastro.js"></script>
 </body>
